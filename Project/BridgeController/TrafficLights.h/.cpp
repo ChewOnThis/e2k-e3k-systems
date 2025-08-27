@@ -1,1 +1,0 @@
-// road R/Y/G + marine R/G + boom-gate (servos)
