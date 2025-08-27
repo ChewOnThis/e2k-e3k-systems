@@ -1,0 +1,28 @@
+Functional Units:
+    Motor Control
+    Road Traffic Light Control
+    Marine Traffic Light Control
+    Web Server Communication Protocols
+    Web Server Frontend
+    Web Server Backend
+
+File Features:
+    BridgeActuator.cpp
+        Motor Class
+            Variables
+                Enable Pin
+                Control Pin
+            Functions
+                Linear Motor Control
+                
+    Buttons.cpp
+
+    RemoteLink.cpp
+
+    TrafficLight.cpp
+
+    ControlBridge.ino
+        Leave Empty, has code construction in the background for arduino
+
+    config.h
+
