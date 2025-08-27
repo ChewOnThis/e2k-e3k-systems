@@ -8,15 +8,23 @@ Functional Units:
 
 File Features:
     BridgeActuator.cpp
-        Motor Class
-            Variables
-                Enable Pin
-                Control Pin
-            Functions
-                Linear Motor Control
-                
+        Classes
+            Motor
+                Variables
+                    Enable Pin
+                    Control Pin
+                Functions
+                    Linear Motor Control
+       
     Buttons.cpp
+        Variables
+            LimitSwitchPin_Top
+            LimitSwitchPin_Bottom
+            BridgeActivationPin
 
+    Interrupts.cpp
+        Functions
+            LimitSwitch(var motor)
     RemoteLink.cpp
 
     TrafficLight.cpp
