@@ -1,0 +1,1 @@
+// pins, timings, compile-time switches (ESP32 vs MEGA, etc.)
