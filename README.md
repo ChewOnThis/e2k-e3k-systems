@@ -1,9 +1,10 @@
-Repository for ENGG2000/ENGG3000 Systems team. Working on code for sensors and bridge movement
+### Repository for ENGG2000/ENGG3000 Systems team
+Working on code for sensors and bridge movement
 
-Project:
+#### Project:
     Contains the Arduino acceptable Project Code
 
-Documentation:
+#### Documentation:
     Psuedocode and File Function Separation
     Algorithm Flow Sequence Chart {Mermaid}
     
