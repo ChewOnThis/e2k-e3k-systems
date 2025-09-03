@@ -34,3 +34,15 @@ File Features:
 
     config.h
 
+
+State Machine:
+    States:
+        Down, Prep, Raising, Up, Lowering, Aborted
+    
+    Down -> Prep -> Raising -> Up -> Lowering -> Down
+        Abort (From any)
+
+    Down -> Prep
+        - Physical Button Press or Web Button State
+    
+
