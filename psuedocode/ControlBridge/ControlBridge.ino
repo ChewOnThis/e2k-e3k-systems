@@ -2,6 +2,8 @@
 #include "config.h"
 #include "Raising.h"
 #include "Lowering.h"
+#include <WebServer.h>
+#include <WiFi.h>
 
 /*    Simple FSM from your diagram (only essentials)     */
 enum State { DOWN, PREP_RAISE, RAISING, UP, PREP_LOWER, LOWERING,
@@ -26,7 +28,7 @@ void setup() {
 }
 void loop() {
   readInputs();
-
+ 
   switch (state) {
     case DOWN: {
       if (first) { first=false; motorStop(); roadGreen(); marineRed(); gatesUp(); }
@@ -102,7 +104,7 @@ void readInputs() {
   // TODO: map the actual buttons/sensors here
 }
 
-bool eStop()             { return g_estop; }             // wire to your E STOP
+bool eStop()             { return g_estop; }             // wire to E STOP
 bool cancelRequested()   { return reqCancel; }           // keep latched until handled
 bool carOnBridge()       { /* plates/mats */ return false; }
 bool boatWaiting()       { /* waiting sensor */ return false; }
