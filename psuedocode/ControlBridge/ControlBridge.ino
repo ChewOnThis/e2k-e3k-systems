@@ -1,7 +1,11 @@
-#include <Arduino.h>
+ 
 #include "config.h"
 #include "Raising.h"
 #include "Lowering.h"
+#include "PrepRaise.h"
+#include "PrepLow.h"
+#include "EmergencyLower.h"
+#include "EmergencyRaise.h"
 #include <WebServer.h>
 #include <WiFi.h>
 
@@ -28,7 +32,7 @@ void setup() {
 }
 void loop() {
   readInputs();
- 
+
   switch (state) {
     case DOWN: {
       if (first) { first=false; motorStop(); roadGreen(); marineRed(); gatesUp(); }
@@ -36,9 +40,11 @@ void loop() {
     } break;
 
     case PREP_RAISE: {
-      if (first) { first=false; t0=millis(); roadYellow(); marineRed(); gatesDown(); }
-      if (carOnBridge()) { gotoState(EMERGENCY_LOWER); break; }
-      if (millis() t0 >= T_YELLOW) { roadRed(); gotoState(RAISING); }
+      if (first) { first=false; PrepRaise::enter(); }
+      using PrepRaise::Result;
+      Result r = PrepRaise::tick();
+      if      (r == Result::TO_RAISING)         gotoState(RAISING);
+      else if (r == Result::TO_EMERGENCY_LOWER) gotoState(EMERGENCY_LOWER);
     } break;
 
     case RAISING: {
@@ -55,9 +61,11 @@ void loop() {
     } break;
 
     case PREP_LOWER: {
-      if (first) { first=false; marineRed(); /* road stays red; gates stay down */ }
-      if (boatUnderSpan() || boatWaiting()) { gotoState(UP); }
-      else { gotoState(LOWERING); }  // “All clear” path
+      if (first) { first=false; PrepLow::enter(); }
+      using PrepLow::Result;
+      Result r = PrepLow::tick();
+      if      (r == Result::TO_UP)       gotoState(UP);
+      else if (r == Result::TO_LOWERING) gotoState(LOWERING);
     } break;
 
     case LOWERING: {
@@ -69,13 +77,17 @@ void loop() {
     } break;
 
     case EMERGENCY_LOWER: {
-      if (first) { first=false; roadRed(); marineRed(); gatesDown(); motorEnable(); motorDirDown(); motorCruiseDown(); }
-      if (bottomLimitPressed()) { motorStop(); gotoState(DOWN); }
+      if (first) { first=false; EmergencyLower::enter(); }
+      using EmergencyLower::Result;
+      Result r = EmergencyLower::tick();
+      if (r == EmergencyLower::Result::TO_DOWN) gotoState(DOWN);
     } break;
 
     case EMERGENCY_RAISE: {
-      if (first) { first=false; roadRed(); marineRed(); gatesDown(); motorEnable(); motorDirUp(); motorCruiseUp(); }
-      if (topLimitPressed())    { motorStop(); gotoState(UP); }
+      if (first) { first=false; EmergencyRaise::enter(); }
+      using EmergencyRaise::Result;
+      Result r = EmergencyRaise::tick();
+      if (r == EmergencyRaise::Result::TO_UP) gotoState(UP);
     } break;
   }
 }
