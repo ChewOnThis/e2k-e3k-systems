@@ -5,44 +5,39 @@
 const char* ssid = "ESP32WA8";   // Enter SSID here
 const char* password = "12345678";  //Enter Password here
 
+IPAddress local_ip(192,168,1,1);
+IPAddress gateway(192,168,1,1);
+IPAddress subnet(255,255,255,0);
+
 WebServer server(80);
 
-uint8_t LED1pin = 23;
+uint8_t LED1pin = 2;
 bool LED1status = LOW;
 
+uint8_t LED2pin = 23;
+bool LED2status = LOW;
 
 
 void setup() {
   Serial.begin(115200);
   delay(100);
   pinMode(LED1pin, OUTPUT);
-  //pinMode(LED2pin, OUTPUT);
+  pinMode(LED2pin, OUTPUT);
 
-  Serial.println("Connecting to ");
-  Serial.println(ssid);
-
-  //connect to your local wi-fi network
-  WiFi.begin(ssid, password);
-
-  //check wi-fi is connected to wi-fi network
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.print(".");
-  }
-  Serial.println("");
-  Serial.println("WiFi connected..!");
-  Serial.print("Got IP: ");
-  Serial.println(WiFi.localIP());
+  WiFi.softAP(ssid, password);
+  WiFi.softAPConfig(local_ip, gateway, subnet);
+  delay(100);
 
   server.on("/", handle_OnConnect);
   server.on("/led1on", handle_led1on);
   server.on("/led1off", handle_led1off);
-  //server.on("/led2on", handle_led2on);
-  //server.on("/led2off", handle_led2off);
+  server.on("/led2on", handle_led2on);
+  server.on("/led2off", handle_led2off);
   server.onNotFound(handle_NotFound);
 
   server.begin();
   Serial.println("HTTP server started");
+  digitalWrite(2, HIGH);
 }
 
 void loop() {
@@ -51,9 +46,9 @@ void loop() {
 
 void handle_OnConnect() {
   LED1status = LOW;
-  //LED2status = LOW;
+  LED2status = LOW;
   digitalWrite(LED1pin, LOW);
-  //digitalWrite(LED2pin, LOW);
+  digitalWrite(LED2pin, LOW);
   Serial.println("LED1 Status: OFF | LED2 Status: OFF");
   server.send(200, "text/html", createHTML());
 }
@@ -126,22 +121,22 @@ String createHTML() {
   str += "</div>";
 
   // LED 2 Control
-//   str += "<div class=\"led-control\">";
-//   str += "<span class=\"led-label\">LED 2</span>";
-//   str += "<div class=\"toggle-switch\">";
-//   if (LED2status) {
-//     str += "<a href=\"/led2off\">";
-//     str += "<div class=\"slider on\"></div>";
-//     str += "</a>";
-//   } else {
-//     str += "<a href=\"/led2on\">";
-//     str += "<div class=\"slider\"></div>";
-//     str += "</a>";
-//   }
-//   str += "</div>";
-//   str += "</div>";
+  str += "<div class=\"led-control\">";
+  str += "<span class=\"led-label\">LED 2</span>";
+  str += "<div class=\"toggle-switch\">";
+  if (LED2status) {
+    str += "<a href=\"/led2off\">";
+    str += "<div class=\"slider on\"></div>";
+    str += "</a>";
+  } else {
+    str += "<a href=\"/led2on\">";
+    str += "<div class=\"slider\"></div>";
+    str += "</a>";
+  }
+  str += "</div>";
+  str += "</div>";
 
-//   str += "</body>";
-//   str += "</html>";
+  str += "</body>";
+  str += "</html>";
   return str;
 }
