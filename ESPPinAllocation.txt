@@ -1,0 +1,12 @@
+List of Pinned components: 17
+    Motor - 2 Pins
+    Buttons
+        2 limit
+        1 emergency stop
+        1 bridge control
+    2 Ultrasonic - 4
+    traffic light - 3
+    street light mosfet - 1
+    boat led - 1
+    status led - 1
+    buzzer - 1
