@@ -9,7 +9,7 @@
 #include <WebServer.h>
 #include <WiFi.h>
 
-/*    Simple FSM from your diagram (only essentials)     */
+/*    Simple FSM from our diagram (only essentials)     */
 enum State { DOWN, PREP_RAISE, RAISING, UP, PREP_LOWER, LOWERING,
              EMERGENCY_LOWER, EMERGENCY_RAISE };
 
