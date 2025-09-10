@@ -7,9 +7,9 @@ volatile unsigned long LastPulseTimeB;
 int durationA;
 int durationB;
 //unsigned long startTime;
-#define trigPinA 12
+#define trigPinA 4
 #define echoPinA 2
-#define trigPinB 13
+#define trigPinB 5
 #define echoPinB 3
 
 
@@ -38,13 +38,17 @@ void loop(){
   Serial.print("SensorA:");
   // Serial.print(LastPulseTimeA);
   // Serial.print('\t');
-  Serial.print((LastPulseTimeA/2) / 29.1,1);
+  float valueA = (LastPulseTimeA/2) / 29.1;
+  if (valueA > 200.0) valueA = 200.0;
+  Serial.print(valueA,1);
   // Serial.println("cm");
 	Serial.println();
   Serial.print("SensorB:");
   // Serial.print(LastPulseTimeB);
   // Serial.print('\t');
-  Serial.print((LastPulseTimeB/2) / 29.1,1);
+  float valueB = (LastPulseTimeB/2) / 29.1;
+  if (valueB > 200.0) valueB = 200.0;
+  Serial.print(valueB,1);
   // Serial.println("cm");
 	Serial.println();
 
