@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LED Controller (Standalone Demo)</title>
+    <style>
+        body{font-family:Arial,Helvetica,sans-serif;color:#444;text-align:center;margin:0;padding:40px 16px;}
+        .title{font-size:30px;font-weight:700;letter-spacing:1px;margin:20px 0 30px;}
+        .toolbar{display:flex;justify-content:center;gap:14px;align-items:center;margin-bottom:20px;color:#666;font-size:14px;}
+        .led-control{display:flex;align-items:center;justify-content:center;margin:24px 0;gap:18px;}
+        .led-label{font-size:22px;min-width:90px;text-align:right;}
+        .btn-wrap{min-width:180px;text-align:left;}
+        .btn-toggle{font-size:22px;padding:14px 28px;border:none;border-radius:12px;cursor:pointer;
+                    box-shadow:0 2px 6px rgba(0,0,0,.15);transition:transform .05s ease,opacity .1s ease;}
+        .btn-toggle:active{transform:scale(0.98);}
+        .btn-toggle.on{background:#2e7d32;color:#fff;}   /* green */
+        .btn-toggle.off{background:#c62828;color:#fff;}  /* red   */
+        .hint{font-size:12px;color:#777;margin-top:4px;}
+        .status{margin-top:24px;color:#666;font-size:13px;}
+        .hr{height:1px;background:#eee;margin:24px auto;max-width:640px;}
+    </style>
+</head>
+
+<body>
+  <h1 class="title">LED CONTROLLER (Standalone)</h1>
+
+  <div class="toolbar">
+    <label>
+      <input id="simulate" type="checkbox">
+      Simulate other client changes
+    </label>
+    <span>•</span>
+    <span>Preview only — no ESP32 required</span>
+  </div>
+
+  <!-- LED 1 -->
+  <div class="led-control">
+    <div class="led-label">LED 1</div>
+    <div class="btn-wrap">
+      <button id="led1" class="btn-toggle off" aria-pressed="false">OFF</button>
+      <div class="hint">click to toggle</div>
+    </div>
+  </div>
+
+  <!-- LED 2 -->
+  <div class="led-control">
+    <div class="led-label">LED 2</div>
+    <div class="btn-wrap">
+      <button id="led2" class="btn-toggle off" aria-pressed="false">OFF</button>
+      <div class="hint">click to toggle</div>
+    </div>
+  </div>
+
+  <div class="hr"></div>
+  <div class="status" id="status">State: { led1: 0, led2: 0 }</div>
+
+<script>
+  // ----------------------------
+  // Standalone mock state + UI
+  // ----------------------------
+  const state = { led1: 0, led2: 0 };
+  const statusEl = document.getElementById('status');
+  const btn1 = document.getElementById('led1');
+  const btn2 = document.getElementById('led2');
+  const simulateChk = document.getElementById('simulate');
+
+  function render() {
+    setBtn(btn1, !!state.led1);
+    setBtn(btn2, !!state.led2);
+    statusEl.textContent = `State: { led1: ${state.led1}, led2: ${state.led2} }`;
+  }
+
+  function setBtn(btn, on) {
+    btn.classList.toggle('on', on);
+    btn.classList.toggle('off', !on);
+    btn.textContent = on ? 'ON' : 'OFF';
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+
+  // Local toggle (no network)
+  btn1.addEventListener('click', () => {
+    state.led1 = state.led1 ? 0 : 1;
+    render();
+  });
+  btn2.addEventListener('click', () => {
+    state.led2 = state.led2 ? 0 : 1;
+    render();
+  });
+
+  // Optional: simulate another client changing the state in the background
+  let simTimer = null;
+  simulateChk.addEventListener('change', () => {
+    if (simulateChk.checked) {
+      simTimer = setInterval(() => {
+        // randomly flip one LED to mimic remote change
+        const which = Math.random() < 0.5 ? 'led1' : 'led2';
+        state[which] = state[which] ? 0 : 1;
+        render();
+      }, 2000);
+    } else {
+      clearInterval(simTimer);
+      simTimer = null;
+    }
+  });
+
+  // Initial render
+  render();
+
+  // ----------------------------
+  // When you're ready to connect to the real ESP32:
+  // - Remove the simulate/timer code
+  // - Replace local toggles with fetch('http://<ESP-IP>/led1on'), etc.
+  // - Add a poll() using fetch('http://<ESP-IP>/state') and call render()
+  // ----------------------------
+</script>
+</body>
+</html>
