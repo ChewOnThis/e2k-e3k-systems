@@ -18,6 +18,8 @@ uint8_t LED2pin = 23;
 bool LED2status = LOW;
 
 
+
+
 void setup() {
   Serial.begin(115200);
   delay(100);
@@ -42,7 +44,10 @@ void setup() {
 }
 
 void loop() {
+  unsigned long before = micros();
   server.handleClient();
+  Serial.println(micros() - before);
+  delay(100);
 }
 
 void handle_OnConnect() {
