@@ -9,6 +9,12 @@ IPAddress gateway(192,168,1,1);
 IPAddress subnet(255,255,255,0);
 WebServer server(80);
 
+bool switch1 = 0;
+bool switch2 = 0;
+bool state1 = 0;
+bool state2 = 0;
+
+
 void setup() {
     Serial.begin(115200);
     delay(100);
