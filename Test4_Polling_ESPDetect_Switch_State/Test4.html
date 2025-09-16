@@ -111,6 +111,13 @@
   }
   setInterval(poll, 1000); 
   window.addEventListener('load', poll);
+  function applyState(s){
+    const on = v => v === 1 | v === "1" || v === true;
+    setBtn(document.getElementById('switch1'), on(s.switch1));
+    setBtn(document.getElementById('switch2'), on(s.switch2));
+    setStateBox(document.getElementById('state1'), on(s.state1));
+    setStateBox(document.getElementById('state2'), on(s.state2));
+  }
   // Button click events – flip switch *and* state box together
   btn1.addEventListener('click', () => {
     state.switch1 = state.switch1 ? 0 : 1;
