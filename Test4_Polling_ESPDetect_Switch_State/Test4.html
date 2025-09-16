@@ -5,156 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WA8 Control Panel</title>
     <style>
-        body{
-          font-family:Arial,Helvetica,sans-serif;
-          color:#444;
-          text-align:center;
-          margin:0;
-          padding:40px 16px;
-        }
-        .title{
-          font-size:30px;
-          font-weight:700;
-          letter-spacing:1px;
-          margin:20px 0 30px;
-        }
-        /* .toolbar{
-          display:flex;
-          justify-content:center;
-          gap:14px;align-items:center;
-          margin-bottom:20px;
-          color:#666;
-          font-size:14px;
-        } */
-        .switch-layer{
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          margin:30px 0;gap:18px;
-        }
-        .switch-control{
-          display:flex;
-          align-items:center;
-          justify-content:center;
-        }
-        .switch-label{
-          font-size:22px;
-          min-width:90px;
-          text-align:center;
-        }
-        .btn-wrap{
-          min-width:180px;
-          text-align:center;
-        }
-        .btn-toggle{
-          font-size:20px;
-          padding:14px 28px;
-          border:none;
-          border-radius:12px;
-          cursor:pointer;
-          box-shadow:0 2px 6px rgba(0,0,0,.15);
-          transition:transform .05s ease,opacity .1s ease;
-        }
-        .btn-toggle:active{
-          transform:scale(0.98);
-        }
-        .btn-toggle.on{
-          background:#2e7d32;
-          color:#fff;
-        }   /* green */
-        .btn-toggle.off{
-          background:#c62828;
-          color:#fff;
-        }  /* red   */
-        .state-layer{
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          margin:30px 0;gap:18px;
-        }
-        .state-control{
-          display:flex;
-          align-items:center;
-          justify-content:center;
-        }
-        .state-label{
-          font-size:22px;
-          min-width:90px;
-          text-align:center;
-        }
-        .state-wrap{
-          min-width:180px;
-          justify-content: center;
-          align-items: center;
-        }
-        .state-toggle{
-          font-size:20px;
-          padding:14px 28px;
-          border:none;
-          border-radius:12px;
-          cursor:pointer;
-          box-shadow:0 2px 6px rgba(0,0,0,.15);
-          transition:transform .05s ease,opacity .1s ease;
-        }
-        .state-toggle:active{
-          transform:scale(0.98);
-        }
-        .state-toggle.on{
-          background:#2e7d32;
-          color:#fff;
-        }   /* green */
-        .state-toggle.off{
-          background:#c62828;
-          color:#fff;
-        }  /* red   */
-        .hint{
-          font-size:12px;
-          color:#777;
-          margin-top:4px;
-        }
-        .status{
-          margin-top:24px;
-          color:#666;
-          font-size:13px;
-        }
-        .hr{
-          height:1px;
-          background:#eee;
-          margin:24px auto;
-          max-width:640px;
-        }
-        footer{
-          text-align:center;
-          background-color: #abbaba;
-          color:#777;
-        }
-        .state-box{
-          height:20px;
-          width:100%;
-          background-color: #c62828;
-          border-radius: 10px;
-        }
-        .state-box.on{
-          background-color: #2e7d32;
-        }
-        .state-box.off{
-          background-color: #c62828;
-        }
+        body{font-family:Arial,Helvetica,sans-serif;color:#444;text-align:center;margin:0;padding:40px 16px;}
+        .title{font-size:30px;font-weight:700;letter-spacing:1px;margin:20px 0 30px;}
+        .switch-layer{display:flex;align-items:center;justify-content:center;margin:30px 0;gap:18px;}
+        .switch-control{display:flex;align-items:center;justify-content:center;}
+        .switch-label{font-size:22px;min-width:90px;text-align:center;}
+        .btn-wrap{min-width:180px;text-align:center;}
+        .btn-toggle{font-size:20px;padding:14px 28px;border:none;border-radius:12px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.15);transition:transform .05s ease,opacity .1s ease;}
+        .btn-toggle:active{transform:scale(0.98);}
+        .btn-toggle.on{background:#2e7d32;color:#fff;}   /* green */
+        .btn-toggle.off{background:#c62828;color:#fff;}  /* red   */
+        .state-layer{display:flex;align-items:center;justify-content:center;margin:30px 0;gap:18px;}
+        .state-control{display:flex;align-items:center;justify-content:center;}
+        .state-label{font-size:22px;min-width:90px;text-align:center;}
+        .state-wrap{min-width:180px;justify-content: center;align-items: center;}
+        .state-toggle{font-size:20px;padding:14px 28px;border:none;border-radius:12px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.15);transition:transform .05s ease,opacity .1s ease;}
+        .state-toggle:active{transform:scale(0.98);}
+        .state-toggle.on{background:#2e7d32;color:#fff;}   /* green */
+        .state-toggle.off{background:#c62828;color:#fff;}  /* red   */
+        .hint{font-size:12px;color:#777;margin-top:4px;}
+        .status{margin-top:24px;color:#666;font-size:13px;}
+        .hr{height:1px;background:#eee;margin:24px auto;max-width:640px;}
+        footer{text-align:center;background-color: #abbaba;color:#777;}
+        .state-box{height:20px;width:100%;background-color: #c62828;border-radius: 10px;}
+        .state-box.on{background-color: #2e7d32;}
+        .state-box.off{background-color: #c62828;}
     </style>
 </head>
 
 <body>
   <h1 class="title">WA8 Single Leaft Bridge</h1>
   <h2 class="subtitle">Wireless Control Panel</h2>
-
-  <!-- <div class="toolbar">
-    <label>
-      <input id="simulate" type="checkbox">
-      Simulate other client changes
-    </label>
-    <span>•</span>
-    <span>Preview only — no ESP32 required</span>
-  </div> -->
   <div class="switch-layer">
     <!-- Switch 1 - E-Stop -->
     <div class="switch-control">
@@ -191,7 +72,6 @@
       </div>
     </div>
   </div>
-
   <div class="hr"></div>
   <div class="status" id="status">State: { switch1: 0, switch2: 0 }</div>
   <div class="hr"></div>
@@ -200,249 +80,24 @@
       Team WA8 Wifi Control Webpage for AP Access to ESP32 Dev Board
     </small>
   </footer>
-
-<!-- <script>
-  // ----------------------------
-  // Standalone mock state + UI
-  // ----------------------------
-  const state = { switch1: 0, switch2: 0 , state1: 0, state2: 0};
-  const statusEl = document.getElementById('status');
-  const btn1 = document.getElementById('switch1');
-  const btn2 = document.getElementById('switch2');
-  const state1 = document.getElementById("state1");
-  const state2 = document.getElementById("state2");
-  const simulateChk = document.getElementById('simulate');
-
-  function render() {
-    setBtn(btn1, !!state.switch1);
-    setBtn(btn2, !!state.switch2);
-    setState(state1, !!state.state1);
-    setState(state2, !!state.state2);
-    statusEl.textContent = `State: { switch1: ${state.switch1}, switch2: ${state.switch2}, state1: ${state.state1}, state2 ${state.state2} }`;
-  }
-
-  function setBtn(btn, on) {
-    btn.classList.toggle('on', on);
-    btn.classList.toggle('off', !on);
-    btn.textContent = on ? 'ON' : 'OFF';
-    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-  }
-  function setState(state, on) {
-    state.classList.toggle('on', on);
-    state.classList.toggle('off', !on);
-    state.textContent = on ? 'ON' : 'OFF';
-    state.setAttribute('aria-pressed', on ? 'true' : 'false');
-  }
-
-  // Local toggle (no network)
-  btn1.addEventListener('click', () => {
-    state.switch1 = state.switch1 ? 0 : 1;
-    render();
-  });
-  btn2.addEventListener('click', () => {
-    state.switch2 = state.switch2 ? 0 : 1;
-    render();
-  });
-
-  // Optional: simulate another client changing the state in the background
-  let simTimer = null;
-  simulateChk.addEventListener('change', () => {
-    if (simulateChk.checked) {
-      simTimer = setInterval(() => {
-        // randomly flip one LED to mimic remote change
-        const which = Math.random() < 0.5 ? 'switch1' : 'switch2';
-        state[which] = state[which] ? 0 : 1;
-        render();
-      }, 2000);
-    } else {
-      clearInterval(simTimer);
-      simTimer = null;
-    }
-  });
-
-  // Initial render
-  render();
-
-  // ----------------------------
-  // When you're ready to connect to the real ESP32:
-  // - Remove the simulate/timer code
-  // - Replace local toggles with fetch('http://<ESP-IP>/led1on'), etc.
-  // - Add a poll() using fetch('http://<ESP-IP>/state') and call render()
-  // ----------------------------
-</script> -->
-<!-- <script>
-  const CONFIG = {
-    mode: 'auto',
-    espBase: 'http://192.168.1.1',
-    pollMs: 1000
-  };
-
-  const statusEl = document.getElementById('status');
-  const btn1 = document.getElementById('switch1');
-  const btn2 = document.getElementById('switch2');
-  const state1Box = document.getElementById('state1');
-  const state2Box = document.getElementById('state2');
-
-  const app = {
-    transport: 'mock',
-    baseURL: '',
-    state: {switch1: 0, switch2: 0, state1: 0, state2: 0 },
-    pollTime: null
-  };
-
-  function setBtn(btn, on) {
-    btn.classList.toggle('on', !!on);
-    btn.classList.toggle('off', !on);
-    btn.textContent = on ? 'ON' : 'OFF';
-    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-  }
-
-  function setStateBox(el, on) {
-    el.classList.toggle('on', !!on);
-    el.classList.toggle('off', !on);
-    el.style.backgroundColor = on ? '#2e7d32' : '#c62828';
-  }
-
-  function render() {
-    setbtn(btn1, app.state.switch1);
-    setbtn(btn2, app.state.switch2);
-    setStateBox(state1Box, app.state.state1);
-    setStateBox(state2Box, app.state.state2);
-    statusEl.textContent =
-    `State: { switch1: ${app.state.switch1}, switch2: ${app.state.switch2}, state1: ${app.state.state1}, state2: ${app.state.state2} }`;
-  }
-
-  function url(path) {
-    return app.baseURL + path;
-  }
-
-  async function tryFetch(path) {
-    try {
-      const res = await fetch(path, {cache: 'no-store' });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return await res.json();
-    } catch (e) {
-      return null;
-    }
-  }
-
-  async function detectTransport() {
-    if (CONFIG.mode === 'esp') {
-      app.transport = 'absolute';
-      app.baseURL = CONFIG.espBase;
-      return;
-    }
-    if (CONFIG.mode === 'mock') {
-      app.transport = 'mock';
-      app.baseURL = '';
-      return;
-    }
-    let data = await tryFetch('/state');
-    if (dtata && typeof data === 'object') {
-      app.transport = 'relative';
-      app.baseURL = '';
-      app.state = normalizeState(data);
-      return;
-    }
-
-    data = await tryFetch(CONFIG.espBase + '/state');
-    if (data && typeof data === 'object') {
-      app.transport = 'absolute';
-      app.baseURL = CONFIG.espBase;
-      app.state = normalizeState(data);
-      return;
-    }
-
-    app.transport = 'mock'
-    app.baseURL = '';
-  }
-
-  function normalizeState(s) {
-    const n = x => (x === '1' || x === 1 || x === true) ? 1 : 0;
-    return {
-        switch1:  n(s.switch1),
-        switch2:  n(s.switch2),
-        state1:   n(s.state1),
-        state2:   n(s.state2)
-    };
-  }
-
-  async function toggleSwitxh(which) {
-    if (app.transport === 'mock') {
-      app.state[which] = app.switch[which] ? 0 : 1;
-      render();
-      return;
-    }
-    const isOn = !!app.state[which];
-    const path = (which === 'switch1') 
-                    ? (isOn ? '/switch1off' : '/switch1on')
-                    : (isOn ? '/switch2off' : '/switch2on');
-    await fetch(url(path), {cache: 'no-store'});
-    app.state = await fetchState();
-    render();
-  }
-
-  function startPolling() {
-    if (app.transport === 'mock') return;
-    if (app.pollTimer) clearInterval(app.pollTimer);
-    app.pollTimer = setInterval(async() => {
-      try {
-        const s = await fetchState();
-        app.state = s;
-        render();
-      } catch (e) {}
-    }, CONFIG.pollMs);
-  }
-
-
-  //Switch depending on run type:
-    //Mock
-      btn1.addEventListener('click', () => {
-        state.switch1 = state.switch1 ? 0 : 1;
-        state.state1 = state.switch1;   // NEW: mirror state
-        render();
-      });
-      btn2.addEventListener('click', () => {
-        state.switch2 = state.switch2 ? 0 : 1;
-        state.state2 = state.switch2;   // NEW: mirror state
-        render();
-      });
-    //ESP
-      // btn1.addEventListener('click', () => toggleSwitch('switch1'));
-      // btn2.addEventListener('click', () => toggleSwitch('switch2'));
-
-  (async function init() {
-    await detectTransport();
-    render();
-    startPolling();
-  })();
-</script> -->
-
 <script>
-  /* -----------------------------
-    Mock State + UI
-  ----------------------------- */
   const state = { switch1: 0, switch2: 0, state1: 0, state2: 0 };
-
   const statusEl = document.getElementById('status');
   const btn1 = document.getElementById('switch1');
   const btn2 = document.getElementById('switch2');
   const state1Box = document.getElementById("state1");
   const state2Box = document.getElementById("state2");
-
   function setBtn(btn, on) {
     btn.classList.toggle('on', on);
     btn.classList.toggle('off', !on);
     btn.textContent = on ? 'ON' : 'OFF';
     btn.setAttribute('aria-pressed', on ? 'true' : 'false');
   }
-
   function setStateBox(el, on) {
     el.classList.toggle('on', on);
     el.classList.toggle('off', !on);
     el.style.backgroundColor = on ? '#2e7d32' : '#c62828'; // green/red
   }
-
   function render() {
     setBtn(btn1, !!state.switch1);
     setBtn(btn2, !!state.switch2);
@@ -451,26 +106,18 @@
     statusEl.textContent =
       `State: { switch1: ${state.switch1}, switch2: ${state.switch2}, state1: ${state.state1}, state2: ${state.state2} }`;
   }
-
   // Button click events – flip switch *and* state box together
   btn1.addEventListener('click', () => {
     state.switch1 = state.switch1 ? 0 : 1;
     state.state1 = state.switch1;   // mirror state
     render();
   });
-
   btn2.addEventListener('click', () => {
     state.switch2 = state.switch2 ? 0 : 1;
     state.state2 = state.switch2;   // mirror state
     render();
   });
-
-  // Initial draw
   render();
 </script>
-
-
 </body>
 </html>
-<!-- btn1.addEventListener('click', () => toggleSwitch('switch1'));
-     btn2.addEventListener('click', () => toggleSwitch('switch2')); -->
