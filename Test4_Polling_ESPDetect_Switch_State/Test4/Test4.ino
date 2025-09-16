@@ -48,25 +48,25 @@ void handle_state() {
 void handle_switch1_on(){ 
     switch1 = 1; 
     /* do GPIO etc */ 
-    server.send(200, "text/plain", "ok"); 
+    server.send(200, "text/html", createHTML()); 
 }
 
 void handle_switch1_off(){ 
     switch1 = 0; 
     /* do GPIO etc */ 
-    server.send(200, "text/plain", "ok"); 
+    server.send(200, "text/html", createHTML()); 
 }
 
 void handle_switch2_on(){ 
     switch2 = 1; 
     /* do GPIO etc */ 
-    server.send(200, "text/plain", "ok"); 
+    server.send(200, "text/html", createHTML()); 
 }
 
 void handle_switch2_off(){ 
     switch2 = 0; 
     /* do GPIO etc */ 
-    server.send(200, "text/plain", "ok"); 
+    server.send(200, "text/html", createHTML()); 
 }
 
 
