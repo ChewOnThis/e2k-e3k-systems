@@ -9,26 +9,149 @@ IPAddress gateway(192,168,1,1);
 IPAddress subnet(255,255,255,0);
 WebServer server(80);
 
-bool switch1 = 0;
-bool switch2 = 0;
+int pin = 18;
+bool switch1 = LOW;
+bool switch2 = LOW;
 bool state1 = 0;
 bool state2 = 0;
+int photostate = 0;
+int photopin = 36;
+
+int buttonpin1 = 23;
+int buttonpin2 = 4;
+int buttonpin3 = 15;
+
+int trafficredpin = 25;
+int trafficyellowpin = 26;
+int trafficgreenpin = 27;
+int state = 0;
+
+int statuspin = 19;
+
+int trigPin1 = 33;
+int echoPin1 = 35;
+float duration1, distance1;  
+
+int trigPin2 = 32;
+int echoPin2 = 34;
+float duration2, distance2; 
+
+int buttonState1 = 0;
+int buttonState2 = 0;
+int buttonState3 = 0;
+
+int motorpin1 = 12;
+int motorpin2 = 13;
 
 
 void setup() {
     Serial.begin(115200);
-    delay(100);
+   // delay(100);
+    pinMode(25, OUTPUT);
+    pinMode(26, OUTPUT);
+    pinMode(27, OUTPUT);
+    pinMode(statuspin, OUTPUT);
+    pinMode(pin, OUTPUT);
+    pinMode(photopin, INPUT);
+    pinMode(trigPin1, OUTPUT);  
+	pinMode(echoPin1, INPUT);
+    pinMode(buttonpin1, INPUT_PULLUP);  
+    pinMode(trigPin2, OUTPUT);  
+	pinMode(echoPin2, INPUT);
+    pinMode(buttonpin2, INPUT_PULLUP);
+    pinMode(buttonpin3, INPUT_PULLUP); 
+    pinMode(motorpin1, OUTPUT);
+    pinMode(motorpin2, OUTPUT);
+    analogWrite(motorpin1, 128);
 
-    WiFi.softAP(ssid, password);
-    WiFi.softAPConfig(local_ip, gateway, subnet);
-    delay(100);
 
-    setup_routes();
+
+//     WiFi.softAP(ssid, password);
+//     WiFi.softAPConfig(local_ip, gateway, subnet);
+//     delay(100);
+
+//     setup_routes();
+//     server.begin();
+//     Serial.println("HTTP server started");
+
+    
 
 }
 
 void loop() {
-    server.handleClient();
+    if (!digitalRead(buttonpin2)) {
+        digitalWrite(motorpin2, HIGH);
+        Serial.println("HIGH");
+    } else if (!digitalRead(buttonpin3)) {
+        digitalWrite(motorpin2, LOW);
+        Serial.println("LOW");
+    }
+            
+    photostate = analogRead(photopin);
+    //Serial.println(photostate);
+    //delay(100);
+    if (photostate < 650) {
+        digitalWrite(pin, HIGH);
+    } else {
+        digitalWrite(pin, LOW);
+    }
+
+
+    // delay(100);
+    int temp = digitalRead(buttonpin1);
+    if (temp != 1) {
+        buttonState1 = !buttonState1;
+    }
+    digitalWrite(statuspin, buttonState1);
+
+    digitalWrite(trigPin1, LOW);  
+	delayMicroseconds(2);  
+	digitalWrite(trigPin1, HIGH);  
+	delayMicroseconds(10);  
+	digitalWrite(trigPin1, LOW);
+    duration1 = pulseIn(echoPin1, HIGH);
+    distance1 = (duration1*.0343)/2;
+    Serial.print("Distance1:");  
+	Serial.println(distance1);  
+	delay(100);
+
+    digitalWrite(trigPin2, LOW);  
+	delayMicroseconds(2);  
+	digitalWrite(trigPin2, HIGH);  
+	delayMicroseconds(10);  
+	digitalWrite(trigPin2, LOW);
+    duration2 = pulseIn(echoPin2, HIGH);
+    distance2 = (duration2*.0343)/2;
+    Serial.print("Distance2:");  
+	Serial.println(distance2);  
+	delay(100);
+
+    switch(state) {
+        case 0:
+            digitalWrite(trafficgreenpin, HIGH);
+            digitalWrite(trafficyellowpin, LOW);
+            digitalWrite(trafficredpin, LOW);
+            if (distance1 < 30 | distance2 < 30) {
+                state ++;
+            }
+
+            break;
+        case 1:
+            digitalWrite(trafficgreenpin, LOW);
+            digitalWrite(trafficyellowpin, HIGH);
+            digitalWrite(trafficredpin, LOW);
+            state++;
+            break;
+        case 2:
+            digitalWrite(trafficgreenpin, LOW);
+            digitalWrite(trafficyellowpin, LOW);
+            digitalWrite(trafficredpin, HIGH);
+            if (distance1 > 30 & distance2 > 30) {
+                state = 0;}
+            break;
+    }
+    
+    //server.handleClient();
 }
 
 void setup_routes() {
@@ -56,25 +179,29 @@ void handle_state() {
 
 void handle_switch1_on(){ 
     switch1 = 1; 
-    /* do GPIO etc */ 
+    digitalWrite(pin, HIGH);
+    Serial.println("LED1 Status : ON");
     server.send(200, "text/html", createHTML()); 
 }
 
 void handle_switch1_off(){ 
     switch1 = 0; 
-    /* do GPIO etc */ 
+    digitalWrite(pin, LOW); 
+    Serial.println("LED1 Status : OFF");
     server.send(200, "text/html", createHTML()); 
 }
 
 void handle_switch2_on(){ 
     switch2 = 1; 
-    /* do GPIO etc */ 
+    digitalWrite(33, HIGH); 
+    Serial.println("LED2 Status : ON");
     server.send(200, "text/html", createHTML()); 
 }
 
 void handle_switch2_off(){ 
     switch2 = 0; 
-    /* do GPIO etc */ 
+    digitalWrite(33, LOW); 
+    Serial.println("LED2 Status : OFF");
     server.send(200, "text/html", createHTML()); 
 }
 
@@ -116,6 +243,65 @@ String createHTML() {
   str += "        .state-box.on{background-color: #2e7d32;}\n";
   str += "        .state-box.off{background-color: #c62828;}\n";
   str += "    </style>\n";
+    
+  str += "<script>\n";
+   str += "window.onload = function() {";
+  str += "  const state = { switch1: 0, switch2: 0, state1: 0, state2: 0 };\n";
+  str += "  const statusEl = document.getElementById('status');\n";
+  str += "  const btn1 = document.getElementById('switch1');\n";
+  str += "  const btn2 = document.getElementById('switch2');\n";
+  str += "  const state1Box = document.getElementById(\"state1\");\n";
+  str += "  const state2Box = document.getElementById(\"state2\");\n";
+  str += "  function setBtn(btn, on) {\n";
+  str += "    btn.classList.toggle('on', on);\n";
+  str += "    btn.classList.toggle('off', !on);\n";
+  str += "    btn.textContent = on ? 'ON' : 'OFF';\n";
+  str += "    btn.setAttribute('aria-pressed', on ? 'true' : 'false');\n";
+  str += "  }\n";
+  str += "  function setStateBox(el, on) {\n";
+  str += "    el.classList.toggle('on', on);\n";
+  str += "    el.classList.toggle('off', !on);\n";
+  str += "    el.style.backgroundColor = on ? '#2e7d32' : '#c62828'; // green/red\n";
+  str += "  }\n";
+  str += "  function render() {\n";
+  str += "    setBtn(btn1, !!state.switch1);\n";
+  str += "    setBtn(btn2, !!state.switch2);\n";
+  str += "    setStateBox(state1Box, !!state.state1);\n";
+  str += "    setStateBox(state2Box, !!state.state2);\n";
+  str += "    statusEl.textContent =\n";
+  str += "      `State: { switch1: ${state.switch1}, switch2: ${state.switch2}, state1: ${state.state1}, state2: ${state.state2} }`;\n";
+  str += "  }\n";
+  //Auto Refresh State every 1000ms
+  str += "  function poll(){\n";
+  str += "    fetch('/state').then(r=>r.json()).then(applyState).catch(()=>{}); \n";
+  str += "  }\n";
+
+  str += "  window.addEventListener('load', poll);\n";
+  str += "  function applyState(s){\n";
+  str += "    const on = v => v === 1 | v === \"1\" || v === true;\n";
+  str += "    setBtn(document.getElementById('switch1'), on(s.switch1));\n";
+  str += "    setBtn(document.getElementById('switch2'), on(s.switch2));\n";
+  str += "    setStateBox(document.getElementById('state1'), on(s.state1));\n";
+  str += "    setStateBox(document.getElementById('state2'), on(s.state2));\n";
+  str += "  }\n";
+  str += "  // Button click events – flip switch *and* state box together\n";
+  str += "  btn1.addEventListener('click', () => {\n";
+  str += "    state.switch1 = state.switch1 ? 0 : 1;\n";
+  str += "    state.state1 = state.switch1;   // mirror state\n";
+  str += "    fetch(state.switch1 ? '/switch1on' : '/switch1off');";
+  str += "    render();\n";
+  str += "  });\n";
+  str += "  btn2.addEventListener('click', () => {\n";
+  str += "    state.switch2 = state.switch2 ? 0 : 1;\n";
+  str += "    state.state2 = state.switch2;   // mirror state\n";
+  str += "    fetch(state.switch2 ? '/switch2on' : '/switch2off');";
+  str += "    render();\n";
+  str += "  });\n";
+  str += "  render();\n";
+  str += "  setInterval(poll, 1000); \n";
+  str += "  poll();\n";
+   str += "};";
+  str += "</script>\n";
   str += "</head>\n";
   str += "\n";
   str += "<body>\n";
@@ -165,57 +351,7 @@ String createHTML() {
   str += "      Team WA8 Wifi Control Webpage for AP Access to ESP32 Dev Board\n";
   str += "    </small>\n";
   str += "  </footer>\n";
-  str += "<script>\n";
-  str += "  const state = { switch1: 0, switch2: 0, state1: 0, state2: 0 };\n";
-  str += "  const statusEl = document.getElementById('status');\n";
-  str += "  const btn1 = document.getElementById('switch1');\n";
-  str += "  const btn2 = document.getElementById('switch2');\n";
-  str += "  const state1Box = document.getElementById(\"state1\");\n";
-  str += "  const state2Box = document.getElementById(\"state2\");\n";
-  str += "  function setBtn(btn, on) {\n";
-  str += "    btn.classList.toggle('on', on);\n";
-  str += "    btn.classList.toggle('off', !on);\n";
-  str += "    btn.textContent = on ? 'ON' : 'OFF';\n";
-  str += "    btn.setAttribute('aria-pressed', on ? 'true' : 'false');\n";
-  str += "  }\n";
-  str += "  function setStateBox(el, on) {\n";
-  str += "    el.classList.toggle('on', on);\n";
-  str += "    el.classList.toggle('off', !on);\n";
-  str += "    el.style.backgroundColor = on ? '#2e7d32' : '#c62828'; // green/red\n";
-  str += "  }\n";
-  str += "  function render() {\n";
-  str += "    setBtn(btn1, !!state.switch1);\n";
-  str += "    setBtn(btn2, !!state.switch2);\n";
-  str += "    setStateBox(state1Box, !!state.state1);\n";
-  str += "    setStateBox(state2Box, !!state.state2);\n";
-  str += "    statusEl.textContent =\n";
-  str += "      `State: { switch1: ${state.switch1}, switch2: ${state.switch2}, state1: ${state.state1}, state2: ${state.state2} }`;\n";
-  str += "  }\n";
-  str += "  function poll(){\n";
-  str += "    fetch('/state').then(r=>r.json()).then(applyState).catch(()=>{}); \n";
-  str += "  }\n";
-  str += "  setInterval(poll, 1000); \n";
-  str += "  window.addEventListener('load', poll);\n";
-  str += "  function applyState(s){\n";
-  str += "    const on = v => v === 1 | v === \"1\" || v === true;\n";
-  str += "    setBtn(document.getElementById('switch1'), on(s.switch1));\n";
-  str += "    setBtn(document.getElementById('switch2'), on(s.switch2));\n";
-  str += "    setStateBox(document.getElementById('state1'), on(s.state1));\n";
-  str += "    setStateBox(document.getElementById('state2'), on(s.state2));\n";
-  str += "  }\n";
-  str += "  // Button click events – flip switch *and* state box together\n";
-  str += "  btn1.addEventListener('click', () => {\n";
-  str += "    state.switch1 = state.switch1 ? 0 : 1;\n";
-  str += "    state.state1 = state.switch1;   // mirror state\n";
-  str += "    render();\n";
-  str += "  });\n";
-  str += "  btn2.addEventListener('click', () => {\n";
-  str += "    state.switch2 = state.switch2 ? 0 : 1;\n";
-  str += "    state.state2 = state.switch2;   // mirror state\n";
-  str += "    render();\n";
-  str += "  });\n";
-  str += "  render();\n";
-  str += "</script>\n";
+
   str += "</body>\n";
   str += "</html>\n";
   return str;

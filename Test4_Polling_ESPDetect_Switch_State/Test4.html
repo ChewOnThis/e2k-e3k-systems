@@ -31,6 +31,62 @@
         .state-box.on{background-color: #2e7d32;}
         .state-box.off{background-color: #c62828;}
     </style>
+    <script>
+      window.onload = fucntion() {
+      const state = { switch1: 0, switch2: 0, state1: 0, state2: 0 };
+      const statusEl = document.getElementById('status');
+      const btn1 = document.getElementById('switch1');
+      const btn2 = document.getElementById('switch2');
+      const state1Box = document.getElementById("state1");
+      const state2Box = document.getElementById("state2");
+      function setBtn(btn, on) {
+        btn.classList.toggle('on', on);
+        btn.classList.toggle('off', !on);
+        btn.textContent = on ? 'ON' : 'OFF';
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      }
+      function setStateBox(el, on) {
+        el.classList.toggle('on', on);
+        el.classList.toggle('off', !on);
+        el.style.backgroundColor = on ? '#2e7d32' : '#c62828'; // green/red
+      }
+      function render() {
+        setBtn(btn1, !!state.switch1);
+        setBtn(btn2, !!state.switch2);
+        setStateBox(state1Box, !!state.state1);
+        setStateBox(state2Box, !!state.state2);
+        statusEl.textContent =
+          `State: { switch1: ${state.switch1}, switch2: ${state.switch2}, state1: ${state.state1}, state2: ${state.state2} }`;
+      }
+      function poll(){
+        fetch('/state').then(r=>r.json()).then(applyState).catch(()=>{}); 
+      }
+      window.addEventListener('load', poll);
+      function applyState(s){
+        const on = v => v === 1 | v === "1" || v === true;
+        setBtn(document.getElementById('switch1'), on(s.switch1));
+        setBtn(document.getElementById('switch2'), on(s.switch2));
+        setStateBox(document.getElementById('state1'), on(s.state1));
+        setStateBox(document.getElementById('state2'), on(s.state2));
+      }
+      // Button click events – flip switch *and* state box together
+      btn1.addEventListener('click', () => {
+        state.switch1 = state.switch1 ? 0 : 1;
+        state.state1 = state.switch1;   // mirror state
+        fetch(state.switch1 ? '/switch1on' : '/switch1off');
+        render();
+      });
+      btn2.addEventListener('click', () => {
+        state.switch2 = state.switch2 ? 0 : 1;
+        state.state2 = state.switch2;   // mirror state
+        fetch(state.switch2 ? '/switch2on' : '/switch2off');
+        render();
+      });
+      render();
+      setInterval(poll, 1000);
+      poll();
+    };
+  </script>
 </head>
 
 <body>
@@ -80,56 +136,5 @@
       Team WA8 Wifi Control Webpage for AP Access to ESP32 Dev Board
     </small>
   </footer>
-<script>
-  const state = { switch1: 0, switch2: 0, state1: 0, state2: 0 };
-  const statusEl = document.getElementById('status');
-  const btn1 = document.getElementById('switch1');
-  const btn2 = document.getElementById('switch2');
-  const state1Box = document.getElementById("state1");
-  const state2Box = document.getElementById("state2");
-  function setBtn(btn, on) {
-    btn.classList.toggle('on', on);
-    btn.classList.toggle('off', !on);
-    btn.textContent = on ? 'ON' : 'OFF';
-    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-  }
-  function setStateBox(el, on) {
-    el.classList.toggle('on', on);
-    el.classList.toggle('off', !on);
-    el.style.backgroundColor = on ? '#2e7d32' : '#c62828'; // green/red
-  }
-  function render() {
-    setBtn(btn1, !!state.switch1);
-    setBtn(btn2, !!state.switch2);
-    setStateBox(state1Box, !!state.state1);
-    setStateBox(state2Box, !!state.state2);
-    statusEl.textContent =
-      `State: { switch1: ${state.switch1}, switch2: ${state.switch2}, state1: ${state.state1}, state2: ${state.state2} }`;
-  }
-  function poll(){
-    fetch('/state').then(r=>r.json()).then(applyState).catch(()=>{}); 
-  }
-  setInterval(poll, 1000); 
-  window.addEventListener('load', poll);
-  function applyState(s){
-    const on = v => v === 1 | v === "1" || v === true;
-    setBtn(document.getElementById('switch1'), on(s.switch1));
-    setBtn(document.getElementById('switch2'), on(s.switch2));
-    setStateBox(document.getElementById('state1'), on(s.state1));
-    setStateBox(document.getElementById('state2'), on(s.state2));
-  }
-  // Button click events – flip switch *and* state box together
-  btn1.addEventListener('click', () => {
-    state.switch1 = state.switch1 ? 0 : 1;
-    state.state1 = state.switch1;   // mirror state
-    render();
-  });
-  btn2.addEventListener('click', () => {
-    state.switch2 = state.switch2 ? 0 : 1;
-    state.state2 = state.switch2;   // mirror state
-    render();
-  });
-  render();
-</script>
 </body>
 </html>

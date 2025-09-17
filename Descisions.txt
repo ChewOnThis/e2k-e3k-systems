@@ -10,6 +10,5 @@
             Seperate Function   
                 analogwrite motor 0
                 websserver states 0
-                
         WebServer Polling
     Ultra sonic - No interupt, noise filter(history averaging)
