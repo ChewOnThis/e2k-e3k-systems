@@ -82,7 +82,8 @@ void Main_tick(bool reqRaise, bool reqLower, bool reqAbort, uint32_t tNow) {
 
     case UP: {
       roadR(); marineG(); gatesDownFn(); Act->stop();
-      if (reqLower) gotoState(PREP_LOW, tNow);
+      // If no boat is waiting or under the span, start PREP_LOW automatically
+      if (reqLower || (!boatWait() && !boatUnder())) gotoState(PREP_LOW, tNow);
     } break;
 
     case PREP_LOW: {
