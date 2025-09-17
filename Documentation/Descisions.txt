@@ -1,0 +1,15 @@
+10/09/2025
+    Interrupts
+        Limits switches
+            Seperate pins 
+            Seperate Interrupts
+            Same Function (check current state)
+        Emergency Stop button
+            Seperate interrupt
+            Seperate pin
+            Seperate Function   
+                analogwrite motor 0
+                websserver states 0
+                
+        WebServer Polling
+    Ultra sonic - No interupt, noise filter(history averaging)

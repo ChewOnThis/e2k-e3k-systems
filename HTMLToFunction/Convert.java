@@ -30,8 +30,9 @@ public class Convert {
             System.exit(1);
         }
 
-        String inPath = "../WebServer/Standalone.html";
-        String outPath = (args.length == 2) ? args[1] : "./createHTMLFiles/createHTML.txt";
+
+        String inPath = args[0];
+        String outPath = (args.length == 2) ? args[1] : "./createHTML.txt";
 
         // Get timestamp
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
