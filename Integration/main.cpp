@@ -2,6 +2,7 @@
 #include "Motor.h"
 #include "LimitSwitch.h"
 #include "Ultrasonic.h"
+#include "Config.h"
 
 // Dependencies
 static Motor*       Act=nullptr;
@@ -118,3 +119,6 @@ void Main_tick(bool reqRaise, bool reqLower, bool reqAbort, uint32_t tNow) {
     } break;
   }
 }
+
+typedef void (*VoidFn)();
+typedef bool (*BoolFn)();

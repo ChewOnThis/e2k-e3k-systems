@@ -1,8 +1,10 @@
+#include <Arduino.h>
 #include "Config.h"   
 #include "main.h"
 #include "Motor.h"
 #include "LimitSwitch.h"
 #include "Ultrasonic.h"
+#include "Webpage.h"
 
 // Singletons
 Motor       Act;
@@ -29,11 +31,7 @@ void motorHwDirUp()    { digitalWrite(PIN_MOTOR_DIR, HIGH); }
 void motorHwDirDown()  { digitalWrite(PIN_MOTOR_DIR, LOW);  }
 void motorHwWritePWM(int duty255) {
   duty255 = constrain(duty255, 0, 255);
-#ifdef ARDUINO_ARCH_ESP32
-  ledcWrite(PWM_CH, duty255);                 // channel macro
-#else
   analogWrite(PIN_MOTOR_PWM, duty255);
-#endif
 }
 
 // ---------- Lights / gates (stubs) ----------
@@ -54,19 +52,15 @@ bool boatUnderSpan() { return SonarUnder.distanceMM() < BOAT_UNDER_MM;   }
 // ---------- Wiring the world ----------
 void setup() {
   Serial.begin(115200);
-
   pinMode(PIN_MOTOR_DIR, OUTPUT);
   pinMode(PIN_MOTOR_PWM, OUTPUT);
   pinMode(PIN_BTN_RAISE, INPUT_PULLUP);
   pinMode(PIN_BTN_LOWER, INPUT_PULLUP);
   pinMode(PIN_BTN_ABORT, INPUT_PULLUP);
 
-#ifdef ARDUINO_ARCH_ESP32
-  ledcSetup(PWM_CH, PWM_FREQ, PWM_RES);      
-  ledcAttachPin(PIN_MOTOR_PWM, PWM_CH);
-#endif
 
-  // Initialize sensors
+
+  // Initialise sensors
   Limits.begin();
   SonarWait.begin();
   SonarUnder.begin();
@@ -76,13 +70,18 @@ void setup() {
 
   // Pass config object (optional, uses default if omitted)
   Main_init(&Act, &Limits, &SonarWait, &SonarUnder);
+  Webpage_init();
 }
 
 void loop() {
+  Webpage_poll();
   // Read buttons (active-low)
-  bool reqRaise = digitalRead(PIN_BTN_RAISE) == LOW;
-  bool reqLower = digitalRead(PIN_BTN_LOWER) == LOW;
-  bool reqAbort = digitalRead(PIN_BTN_ABORT) == LOW;
+  bool reqRaiseBtn = digitalRead(PIN_BTN_RAISE) == LOW;
+  bool reqLowerBtn = digitalRead(PIN_BTN_LOWER) == LOW;
+  bool reqAbortBtn = digitalRead(PIN_BTN_ABORT) == LOW;
+  bool reqRaise = reqRaiseBtn || Web_reqRaise();
+  bool reqLower = reqLowerBtn || Web_reqLower();
+  bool reqAbort = reqAbortBtn || Web_reqAbort();
 
   // Provide environment (lights/gates + sensors) via callbacks
   Main_setEnvironment(roadGreen, roadYellow, roadRed,
@@ -92,4 +91,5 @@ void loop() {
 
   // Run FSM
   Main_tick(reqRaise, reqLower, reqAbort, millis());
+  Web_setState(reqAbort?1:0, reqRaise?1:0); // simple mapping
 }
