@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Traffic Light Demo</title>
+<style>
+  :root{
+    /* Vibrant ON colors */
+    --red-on:    #ff2b2b;
+    --yellow-on: #ffd400;
+    --green-on:  #1eea5a;
+
+    /* Dim OFF colors (muted, low luminance) */
+    --red-off:    #3a0d0d;
+    --yellow-off: #3a3200;
+    --green-off:  #0e2a18;
+
+    /* Glow strengths */
+    --glow-red:    rgba(255, 40, 40, 0.65);
+    --glow-yellow: rgba(255, 212, 0, 0.55);
+    --glow-green:  rgba(30, 234, 90, 0.55);
+
+    /* Housing colors */
+    --housing: #111;
+    --bezel:   #000;
+  }
+
+  /* Page layout */
+  body{
+    margin:0;
+    min-height:100svh;
+    display:grid;
+    place-items:center;
+    font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: radial-gradient(1200px 600px at 50% 0%, #1b1b1b 0%, #0f0f0f 60%, #0a0a0a 100%);
+    color:#ddd;
+  }
+
+  .wrap{
+    display:flex;
+    gap:28px;
+    align-items:center;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+
+  /* Traffic light housing */
+  .traffic-light{
+    width: 140px;
+    padding: 18px 16px;
+    background: linear-gradient(#1a1a1a, #0e0e0e);
+    border: 2px solid var(--bezel);
+    border-radius: 18px;
+    box-shadow:
+      inset 0 12px 18px rgba(255,255,255,0.05),
+      inset 0 -8px 20px rgba(0,0,0,0.6),
+      0 16px 28px rgba(0,0,0,0.6);
+    display:grid;
+    gap:18px;
+  }
+
+  /* Light “well” to give each lamp some depth */
+  .well{
+    background: linear-gradient(180deg, #0d0d0d 0%, #070707 100%);
+    padding:8px;
+    border-radius: 16px;
+    border:1px solid #000;
+    box-shadow: inset 0 8px 12px rgba(255,255,255,0.05),
+                inset 0 -8px 14px rgba(0,0,0,0.7);
+  }
+
+  /* Individual lamp */
+  .lamp{
+    width: 92px;
+    height: 92px;
+    margin:0 auto;
+    border-radius: 50%;
+    border: 4px solid #000; /* black border on each light */
+    position: relative;
+    display:grid;
+    place-items:center;
+
+    /* Subtle inner gloss to make it feel like a dome */
+    background:
+      radial-gradient(160% 120% at 30% 30%, rgba(255,255,255,0.18) 0%, transparent 35%),
+      var(--base-color);
+    box-shadow:
+      inset 0 10px 16px rgba(255,255,255,0.06),
+      inset 0 -14px 18px rgba(0,0,0,0.45);
+    transition: box-shadow 140ms ease, background-color 140ms ease, filter 140ms ease;
+  }
+
+  /* Off state uses dim color and lower emission */
+  .lamp.off{
+    filter: saturate(85%) brightness(75%);
+  }
+
+  /* On state: vibrant fill + bloom glow */
+  .lamp.on.red{
+    --base-color: var(--red-on);
+    background-color: var(--red-on);
+    box-shadow:
+      0 0 20px 6px var(--glow-red),
+      0 0 44px 10px var(--glow-red),
+      inset 0 10px 16px rgba(255,255,255,0.06),
+      inset 0 -14px 18px rgba(0,0,0,0.45);
+  }
+  .lamp.on.yellow{
+    --base-color: var(--yellow-on);
+    background-color: var(--yellow-on);
+    box-shadow:
+      0 0 20px 6px var(--glow-yellow),
+      0 0 44px 10px var(--glow-yellow),
+      inset 0 10px 16px rgba(255,255,255,0.06),
+      inset 0 -14px 18px rgba(0,0,0,0.45);
+  }
+  .lamp.on.green{
+    --base-color: var(--green-on);
+    background-color: var(--green-on);
+    box-shadow:
+      0 0 20px 6px var(--glow-green),
+      0 0 44px 10px var(--glow-green),
+      inset 0 10px 16px rgba(255,255,255,0.06),
+      inset 0 -14px 18px rgba(0,0,0,0.45);
+  }
+
+  /* Off variants define their base (dim) color */
+  .lamp.off.red    { --base-color: var(--red-off);    background-color: var(--red-off); }
+  .lamp.off.yellow { --base-color: var(--yellow-off); background-color: var(--yellow-off); }
+  .lamp.off.green  { --base-color: var(--green-off);  background-color: var(--green-off); }
+
+  /* Controls */
+  .controls{
+    display:grid;
+    gap:10px;
+    min-width: 240px;
+  }
+  .controls .row{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  button{
+    cursor:pointer;
+    border:1px solid #222;
+    background:#1b1b1b;
+    color:#eee;
+    padding:10px 14px;
+    border-radius:10px;
+    box-shadow: 0 2px 0 #000;
+    transition: transform 80ms ease, box-shadow 80ms ease;
+  }
+  button:hover{ transform: translateY(-1px); }
+  button:active{ transform: translateY(1px); box-shadow: 0 0 0 #000; }
+
+  .hint{
+    font-size:12px;
+    color:#aaa;
+    margin-top:6px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap" role="group" aria-label="Traffic light demo">
+    <div class="traffic-light" aria-live="polite">
+      <div class="well">
+        <div id="lamp-red"    class="lamp off red"    role="img" aria-label="Red light off"></div>
+      </div>
+      <div class="well">
+        <div id="lamp-yellow" class="lamp off yellow" role="img" aria-label="Yellow light off"></div>
+      </div>
+      <div class="well">
+        <div id="lamp-green"  class="lamp off green"  role="img" aria-label="Green light off"></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="row">
+        <button onclick="setState('red')"    aria-controls="lamp-red lamp-yellow lamp-green">Red</button>
+        <button onclick="setState('yellow')" aria-controls="lamp-red lamp-yellow lamp-green">Yellow</button>
+        <button onclick="setState('green')"  aria-controls="lamp-red lamp-yellow lamp-green">Green</button>
+        <button onclick="setState('off')"    aria-controls="lamp-red lamp-yellow lamp-green">All Off</button>
+      </div>
+      <div class="row">
+        <button onclick="cycle()" title="Cycle R → Y → G">Cycle</button>
+        <button onclick="blink('yellow', 6, 250)">Blink Yellow</button>
+      </div>
+      <div class="hint">Hotkeys: R / Y / G set the light. O = all off. C = cycle.</div>
+    </div>
+  </div>
+
+<script>
+  const red    = document.getElementById('lamp-red');
+  const yellow = document.getElementById('lamp-yellow');
+  const green  = document.getElementById('lamp-green');
+
+  function allOff(){
+    [red, yellow, green].forEach(el => {
+      el.classList.remove('on');
+      el.classList.add('off');
+      el.setAttribute('aria-label', el.classList.contains('red') ? 'Red light off' :
+                                   el.classList.contains('yellow') ? 'Yellow light off' : 'Green light off');
+    });
+  }
+
+  function setOn(el){
+    el.classList.remove('off');
+    el.classList.add('on');
+    const color = el.classList.contains('red') ? 'Red' :
+                  el.classList.contains('yellow') ? 'Yellow' : 'Green';
+    el.setAttribute('aria-label', `${color} light on`);
+  }
+
+  function setState(state){
+    allOff();
+    if(state === 'red')    setOn(red);
+    if(state === 'yellow') setOn(yellow);
+    if(state === 'green')  setOn(green);
+    if(state === 'off')    {/* already off */}
+  }
+
+  // Simple cycle R → Y → G → R …
+  function cycle(){
+    const r = red.classList.contains('on');
+    const y = yellow.classList.contains('on');
+    const g = green.classList.contains('on');
+    if(r){ setState('yellow'); return; }
+    if(y){ setState('green');  return; }
+    if(g){ setState('red');    return; }
+    setState('red');
+  }
+
+  // Blink a given color n times at interval ms
+  function blink(color='yellow', times=6, interval=300){
+    let count = 0;
+    const target = color === 'red' ? red : color === 'green' ? green : yellow;
+    const id = setInterval(() => {
+      target.classList.toggle('on');
+      target.classList.toggle('off');
+      count++;
+      if(count >= times*2){
+        clearInterval(id);
+        // leave it ON at the end
+        setState(color);
+      }
+    }, interval);
+  }
+
+  // Keyboard shortcuts
+  window.addEventListener('keydown', (e)=>{
+    const k = e.key.toLowerCase();
+    if(k === 'r') setState('red');
+    if(k === 'y') setState('yellow');
+    if(k === 'g') setState('green');
+    if(k === 'o') setState('off');
+    if(k === 'c') cycle();
+  });
+
+  // Default state
+  setState('red');
+</script>
+</body>
+</html>

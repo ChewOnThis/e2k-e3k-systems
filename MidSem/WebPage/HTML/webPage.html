@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale-1.0, "/>
+    <title> MidSem WA8 Control Panel </title>
+    <style>
+        :root{
+            --borderwidth: 8px;
+            --buttonRegOn: green;
+            --buttonRegOff: red;
+            --trafficRedOn:#ff2b2b;
+            --trafficRedOff: #3a0d0d;
+            --trafficRedGlow: rgba(255, 40, 40, 0.65);
+            --trafficYellowOn: #ffd400;
+            --trafficYellowOff: #3a3200;
+            --trafficYellowGlow: rgba(255, 212, 0, 0.55);
+            --trafficGreenOn: #1eea5a;
+            --trafficGreenOff: #0e2a1a;
+            --trafficGreenGlow: rgba(30, 234, 90, 0.55);
+            --trafficHousing: #111;
+            --trafficBezel: #000;
+            --estopOn:red;
+            --estopOff:darkRed;
+            --headFoot: calc(100% - (var(--borderwidth)*2));
+
+        }
+        * {
+
+            margin: 0px;
+            padding: 10px;
+        }
+        body {
+            border: var(--borderwidth) solid black;
+            display:flex; 
+            font-family: Arial, Helvetica, sans-serif;
+            color:#ebebeb;
+            text-align: center;
+            flex-direction: column;
+            min-width: min-content;
+            align-items:center;
+            background:linear-gradient(#1e232f, #282f3e,#1e232f, #0f1115);
+            /* background: radial-gradient(1200px 600px at 50% 0%, #282f3e 0%, #0f1115 60%, #1e232f 100%); */
+        }
+        header{
+            border: var(--borderwidth) solid red;
+            width: var(--headFoot);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-evenly;
+        }
+        .debug{
+            border: var(--borderwidth) solid blue;
+            justify-self: flex-end;
+        }
+        .title{
+            border: var(--borderwidth) solid black;
+            display: flex;
+            justify-self: center;
+            flex-direction: column;
+        }
+        main{
+            border: var(--borderwidth) solid green;
+            display:flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+            align-items: flex-start;
+            align-content: center;
+            /* min-width:90%; */
+        }
+        .sideBar{
+            border: var(--borderwidth) solid blue;
+            display:flex;
+            height:100%;
+            flex-direction: column;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            align-content: center;
+            justify-self: flex-start;
+        }
+        .mainBlock{
+            border: var(--borderwidth) solid yellow;
+            display:flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            align-content: center;
+        }
+        section {
+            border: var(--borderwidth) solid;
+            display:flex;
+            flex-wrap: wrap;
+            gap:10px;
+            justify-content: center;
+            align-items: center;
+            align-content: center;
+        }
+        #buttons{
+            border-color: red;
+        }
+        #states{
+            border-color: goldenrod;
+        } 
+        footer {
+            border: var(--borderwidth) solid blue;
+            color: #777; 
+            font-size:12px; 
+            text-align: center;
+            width:var(--headFoot);
+            padding-top:40px;
+        }
+        .box{
+            border: var(--borderwidth) solid;
+            display:flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .controlPanel {
+            border: var(--borderwidth) solid blue;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+        .controlBlock{
+            border:var(--borderwidth) solid black;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+        .statePanel{
+            border: var(--borderwidth) solid red;
+            display:flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+        .stateBlock{
+            border: var(--borderwidth) solid green
+        }
+        #buttonBox {
+            border: var(--borderwidth) solid yellow;
+        }
+        #stateBox {
+            border: var(--borderwidth) solid pink;
+        }
+        .stateToggle{
+            padding: 10px 20px;
+            border-radius: 10px;
+            background-color: --;
+
+        }
+        button{
+            border:none;
+            cursor:pointer;
+        }
+        .buttonToggle{
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 5px 0px darkgoldenrod, 0px 0px 0px 5px black;
+            transition:transform .1s ease;
+        }
+        .buttonToggle:active{
+            transform:scale(0.8);
+        }
+        .buttonToggle.eStop{
+            padding: 0;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+        }
+        .buttonToggle.on{
+            background:var(--buttonRegOn);
+        }
+        .buttonToggle.off{
+            background:var(--buttonRegOff);
+        }
+        .buttonToggle.eStop.on{
+            background:var(--estopOn);
+        }
+        .buttonToggle.eStop.off{
+            background:var(--estopOff);
+        }
+        .buttonToggle.debugButton.off{
+            background: var(--buttonRegOff);
+        }
+        .buttonToggle.debugButton.on{
+            background: var(--buttonRegOn);
+        }
+        .idContainer{
+            border: var(--borderwidth) solid yellow;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .idBox{
+            border: var(--borderwidth) solid orange;
+            display:flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap:5px;
+        }
+    </style>
+    <script></script>
+</head>
+<body>
+    <header>
+        <div class="title">title
+            <h1> WA8 Single Leaf Bridge </h1>
+            <h2> Wireless Control Panel </h2>
+        </div>
+    </header>
+    <main> 
+        <div class="sideBar" style="align-self:flex-start"> Side Bar
+            <div class="controlBlock"> controlBlock
+                <div class="box" id="buttonBox"> 
+                    <label for="eStopBtn" class="controlLabel"> Emergency Stop </label>
+                    <button id="eStopBtn" class="buttonToggle eStop on" aria-pressed="false" > OFF </button>
+                </div>
+            </div>
+            <div class="controlBlock"> controlBlock
+                <div class="box" id="buttonBox"> 
+                    <label for="debugBtn" class="controlLabel"> Debug Mode </label>
+                    <button id="debugBtn" class="buttonToggle debug on" aria-pressed="false" > OFF </button>
+                </div>
+            </div>
+            <div class="idContainer"> idContainer
+                <div class="idContainer">idContainer
+                    <h4>Systems: Group 88</h4>
+                    <div class="idBox">idBox
+                        <h5>48253383 : Isabelle Farolan</h5>
+                        <h5>48346992 : Brie McWhirter</h5>
+                        <h5>47881453 : Nicholas Greenhouse</h5>
+                        <h5>48074101 : Rikita Shil</h5>
+                        <h5>47727330 : Christopher Stokan</h5>
+                        <h5>47713623 : Aidan Williams</h5>
+                        <h5>48275778 : Caleb Chew</h5>
+                    </div>
+                </div>
+                <div class="idContainer">idContainer
+                    <h4>Structures: Group 73</h4>
+                    <div class="idBox">idBox
+                        <h5>47286091 : Adam Malvern</h5>
+                        <h5>46375929 : Harry Vale</h5>
+                        <h5>48347582 : Mohammad Haider</h5>
+                        <h5>47408456 : Bailey Kee</h5>
+                        <h5>47666412 : Adam Ruiz Diaz</h5>
+                        <h5>46387897 : Michael Ferlauto</h5>
+                        <h5>48096695 : Hasanuzzaman Shoeb</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mainBlock"> Main Block
+            <section id="buttons"> Section
+                <div class="controlPanel">ControlPanel
+                    <h3>Manual Controls</h3>
+                    <div class="controlBlock"> controlBlock
+                        <div class="box" id="buttonBox"> 
+                            <label for="switch4" class="controlLabel"> Next State </label>
+                            <button id="switch4" class="buttonToggle off" aria-pressed="false" > State </button>
+                        </div>
+                        <div class="box" id="buttonBox"> 
+                            <label for="switch5" class="controlLabel"> Activate Bridge </label>
+                            <button id="switch5" class="buttonToggle off" aria-pressed="false" > Still </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="states">Section
+                <div class="statePanel traffic">statepanel
+                    <div class="stateBlock">stateblock
+
+
+                    </div>
+                </div>
+                <div class="statePanel">statepanel
+                    <div class="stateBlock">stateblock
+
+
+                    </div>
+                </div>
+            </section>
+        </div>        
+    </main>
+    <footer>Footer
+        <p>Team WA8 Wifi Control Web-Based GUI for AP Access to the ESP32 Microcontroller for Controller over subsystems of the ENGG2000/3000 Scale Model Bridge Design/Contruction Project</p>
+        <a href="https://github.com/ChewOnThis/e2k-e3k-systems">GitHub Repository</a>
+    </footer>
+</body>
+</html>
