@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Responsive Traffic Light (Styled)</title>
+<style>
+  :root{
+    /* Vibrant ON colors */
+    --red-on:    #ff2b2b;
+    --yellow-on: #ffd400;
+    --green-on:  #1eea5a;
+
+    /* Dim OFF colors */
+    --red-off:    #3a0d0d;
+    --yellow-off: #3a3200;
+    --green-off:  #0e2a18;
+
+    /* Bloom glows */
+    --glow-red:    rgba(255, 40, 40, 0.65);
+    --glow-yellow: rgba(255, 212, 0, 0.55);
+    --glow-green:  rgba(30, 234, 90, 0.55);
+  }
+
+  /* Page background */
+  body{
+    margin:0;
+    min-height:100svh;
+    display:grid;
+    place-items:center;
+    font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color:#ddd;
+    background: radial-gradient(1200px 600px at 50% 0%, #1b1b1b 0%, #0f0f0f 60%, #0a0a0a 100%);
+  }
+
+  .wrap{
+    display:flex;
+    gap:28px;
+    align-items:center;
+    flex-wrap:wrap;
+    justify-content:center;
+    padding:16px;
+  }
+
+  /* Traffic light housing
+     --S is the single scale knob for the whole component */
+  .traffic-light{
+    --S: clamp(180px, 24vmin, 420px);  /* try changing this */
+    width: var(--S);
+    padding: calc(var(--S)*0.12);
+    background: linear-gradient(#1a1a1a, #0e0e0e);
+    border: calc(var(--S)*0.014) solid #000;
+    border-radius: calc(var(--S)*0.12);
+    display:grid;
+    gap: calc(var(--S)*0.11);
+    box-shadow:
+      inset 0 calc(var(--S)*0.05) calc(var(--S)*0.09) rgba(255,255,255,0.05),
+      inset 0 calc(var(--S)*-0.035) calc(var(--S)*0.10) rgba(0,0,0,0.60),
+      0 calc(var(--S)*0.07) calc(var(--S)*0.14) rgba(0,0,0,0.60);
+  }
+
+  /* Lamp wells for depth */
+  .well{
+    background: linear-gradient(180deg, #0d0d0d 0%, #070707 100%);
+    padding: calc(var(--S)*0.06);
+    border-radius: calc(var(--S)*0.10);
+    border: calc(var(--S)*0.008) solid #000;
+    box-shadow:
+      inset 0 calc(var(--S)*0.06) calc(var(--S)*0.10) rgba(255,255,255,0.06),
+      inset 0 calc(var(--S)*-0.08) calc(var(--S)*0.12) rgba(0,0,0,0.70);
+  }
+
+  /* Lamps with glossy dome + black bezel */
+  .lamp{
+    width: 100%;
+    aspect-ratio: 1/1;              /* perfect circle */
+    border-radius: 50%;
+    border: calc(var(--S)*0.03) solid #000; /* black border */
+    position: relative;
+
+    /* Subtle inner gloss and lens curvature */
+    background:
+      radial-gradient(160% 120% at 30% 30%, rgba(255,255,255,0.18) 0%, transparent 35%),
+      var(--base-color, #222);
+    box-shadow:
+      inset 0 calc(var(--S)*0.07) calc(var(--S)*0.12) rgba(255,255,255,0.06),
+      inset 0 calc(var(--S)*-0.10) calc(var(--S)*0.14) rgba(0,0,0,0.45);
+    transition: box-shadow 140ms ease, background-color 140ms ease, filter 140ms ease;
+  }
+
+  /* OFF state: dim + slightly desaturated */
+  .lamp.off{ filter: saturate(0.85) brightness(0.75); }
+  .lamp.off.red    { --base-color: var(--red-off); }
+  .lamp.off.yellow { --base-color: var(--yellow-off); }
+  .lamp.off.green  { --base-color: var(--green-off); }
+
+  /* ON state: vibrant fill + scalable bloom outside the bezel */
+  .lamp.on.red{
+    --base-color: var(--red-on);
+    background-color: var(--red-on);
+    box-shadow:
+      0 0 calc(var(--S)*0.14) calc(var(--S)*0.03) var(--glow-red),
+      0 0 calc(var(--S)*0.30) calc(var(--S)*0.06) var(--glow-red),
+      inset 0 calc(var(--S)*0.07) calc(var(--S)*0.12) rgba(255,255,255,0.06),
+      inset 0 calc(var(--S)*-0.10) calc(var(--S)*0.14) rgba(0,0,0,0.45);
+  }
+  .lamp.on.yellow{
+    --base-color: var(--yellow-on);
+    background-color: var(--yellow-on);
+    box-shadow:
+      0 0 calc(var(--S)*0.14) calc(var(--S)*0.03) var(--glow-yellow),
+      0 0 calc(var(--S)*0.30) calc(var(--S)*0.06) var(--glow-yellow),
+      inset 0 calc(var(--S)*0.07) calc(var(--S)*0.12) rgba(255,255,255,0.06),
+      inset 0 calc(var(--S)*-0.10) calc(var(--S)*0.14) rgba(0,0,0,0.45);
+  }
+  .lamp.on.green{
+    --base-color: var(--green-on);
+    background-color: var(--green-on);
+    box-shadow:
+      0 0 calc(var(--S)*0.14) calc(var(--S)*0.03) var(--glow-green),
+      0 0 calc(var(--S)*0.30) calc(var(--S)*0.06) var(--glow-green),
+      inset 0 calc(var(--S)*0.07) calc(var(--S)*0.12) rgba(255,255,255,0.06),
+      inset 0 calc(var(--S)*-0.10) calc(var(--S)*0.14) rgba(0,0,0,0.45);
+  }
+
+  /* Controls (kept simple; scale with font-size) */
+  .controls{
+    display:grid;
+    gap:10px;
+    min-width:min(46ch, 90vw);
+    justify-items:center;
+  }
+  .controls .row{ display:flex; gap:10px; flex-wrap:wrap; }
+  button{
+    cursor:pointer;
+    border:1px solid #222;
+    background:#1b1b1b;
+    color:#eee;
+    padding:.6em 1em;
+    border-radius:.6em;
+    box-shadow: 0 2px 0 #000;
+    transition: transform 80ms ease, box-shadow 80ms ease;
+  }
+  button:hover{ transform: translateY(-1px); }
+  button:active{ transform: translateY(1px); box-shadow: 0 0 0 #000; }
+  .hint{ font-size:12px; color:#aaa; }
+</style>
+</head>
+<body>
+  <div class="wrap" role="group" aria-label="Traffic light demo">
+    <div class="traffic-light" aria-live="polite">
+      <div class="well"><div id="lamp-red"    class="lamp off red"    role="img" aria-label="Red light off"></div></div>
+      <div class="well"><div id="lamp-yellow" class="lamp off yellow" role="img" aria-label="Yellow light off"></div></div>
+      <div class="well"><div id="lamp-green"  class="lamp off green"  role="img" aria-label="Green light off"></div></div>
+    </div>
+
+    <div class="controls">
+      <div class="row">
+        <button onclick="setState('red')">Red</button>
+        <button onclick="setState('yellow')">Yellow</button>
+        <button onclick="setState('green')">Green</button>
+        <button onclick="setState('off')">All Off</button>
+      </div>
+      <div class="row">
+        <button onclick="cycle()" title="Cycle R → Y → G">Cycle</button>
+        <button onclick="blink('yellow', 6, 250)">Blink Yellow</button>
+      </div>
+      <div class="hint">Hotkeys: R / Y / G set the light. O = all off. C = cycle.</div>
+    </div>
+  </div>
+
+<script>
+  const red    = document.getElementById('lamp-red');
+  const yellow = document.getElementById('lamp-yellow');
+  const green  = document.getElementById('lamp-green');
+
+  function allOff(){
+    [red, yellow, green].forEach(el => {
+      el.classList.remove('on'); el.classList.add('off');
+      el.setAttribute('aria-label',
+        el.classList.contains('red') ? 'Red light off' :
+        el.classList.contains('yellow') ? 'Yellow light off' : 'Green light off');
+    });
+  }
+  function setOn(el){
+    el.classList.remove('off'); el.classList.add('on');
+    const c = el.classList.contains('red') ? 'Red' : el.classList.contains('yellow') ? 'Yellow' : 'Green';
+    el.setAttribute('aria-label', `${c} light on`);
+  }
+  function setState(state){
+    allOff();
+    if(state==='red') setOn(red);
+    if(state==='yellow') setOn(yellow);
+    if(state==='green') setOn(green);
+  }
+  function cycle(){
+    const r=red.classList.contains('on'), y=yellow.classList.contains('on'), g=green.classList.contains('on');
+    if(r){ setState('yellow'); return; }
+    if(y){ setState('green');  return; }
+    if(g){ setState('red');    return; }
+    setState('red');
+  }
+  function blink(color='yellow', times=6, interval=300){
+    let count = 0;
+    const target = color==='red' ? red : color==='green' ? green : yellow;
+    const id = setInterval(()=>{
+      target.classList.toggle('on');
+      target.classList.toggle('off');
+      count++;
+      if(count >= times*2){
+        clearInterval(id);
+        setState(color); // finish ON
+      }
+    }, interval);
+  }
+  // keyboard
+  addEventListener('keydown', e=>{
+    const k=e.key.toLowerCase();
+    if(k==='r') setState('red');
+    if(k==='y') setState('yellow');
+    if(k==='g') setState('green');
+    if(k==='o') setState('off');
+    if(k==='c') cycle();
+  });
+
+  setState('red'); // default
+</script>
+</body>
+</html>
