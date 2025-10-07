@@ -1,9 +1,9 @@
-#include "webPage.h"
+#include "WebPage.h"
 
 IPAddress local_ip  (192, 168, 1, 1);
 IPAddress gateway   (192, 168, 1, 1);
 IPAddress subnet    (255, 255, 255, 0);
-Webserver server(80);
+WebServer server(80);
 
 void webPage_init() {
     WiFi.softAPConfig(local_ip, gateway, subnet);
@@ -36,25 +36,25 @@ void handle_eStop_on(){
     //state variable change
     //other gpio stuff
     Serial.println("ESTOP Status : ON");
-    server.send(200, "text/html" createHTML());
+    server.send(200, "text/html" ,createHTML());
 }
 void handle_eStop_off(){
     //state variable change
     //other gpio stuff
     Serial.println("ESTOP Status : OFF");
-    server.send(200, "text/html" createHTML());
+    server.send(200, "text/html" ,createHTML());
 }
 void handle_debug_on(){
     //state variable change
     //other gpio stuff
     Serial.println("DEBUG Status : ON");
-    server.send(200, "text/html" createHTML());
+    server.send(200, "text/html" ,createHTML());
 }
 void handle_debug_off(){
     //state variable change
     //other gpio stuff
     Serial.println("DEBUG Status : OFF");
-    server.send(200, "text/html" createHTML());
+    server.send(200, "text/html" ,createHTML());
 }
 void handle_switchState(){
     //state variable change
@@ -62,19 +62,19 @@ void handle_switchState(){
     Serial.print("SWITCHED TO NEXT STATE : ");
     // Serial.print(bridgeState++);
     // Serial.print(stateMachine.getKey(bridgeState));
-    server.send(200, "text/html" createHTML());
+    server.send(200, "text/html" ,createHTML());
 }
 void handle_activateBridge_raise(){
     //state variable change
     //other gpio stuff
     Serial.println("ACTIVATE BRIDGE Status : RAISE");
-    server.send(200, "text/html" createHTML());
+    server.send(200, "text/html" ,createHTML());
 }
 void handle_activateBridge_lower(){
     //state variable change
     //other gpio stuff
     Serial.println("ACTIVATE BRIDGE Status : LOWER");
-    server.send(200, "text/html" createHTML());
+    server.send(200, "text/html" ,createHTML());
 }
 
 //TODO Convert HTML

@@ -15,5 +15,6 @@ enum bridgeState : uint8_t {
 };
 
 void stateMachine(bridgeState state);
+void stateCycle();
 
 #endif

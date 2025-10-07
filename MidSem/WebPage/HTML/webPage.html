@@ -6,7 +6,7 @@
     <title> MidSem WA8 Control Panel </title>
     <style>
         :root{
-            --borderwidth: 8px;
+            --borderwidth: 0px;
             --buttonRegOn: green;
             --buttonRegOff: red;
             --trafficRedOn:#ff2b2b;
@@ -23,12 +23,20 @@
             --estopOn:red;
             --estopOff:darkRed;
             --headFoot: calc(100% - (var(--borderwidth)*2));
-
+            --showTag: true;
+            --backLight:#282f3e;
+            --backMid :#1e232f;
+            --backDarkMid :#14171f;
+            --backDark:#0f1115;
+            --stateDefault: #2e384d;
+            --textColourDefault: #999;
+            --titleColour: #dfdede;
+        }
+        a {
+            color:red;
         }
         * {
-
-            margin: 0px;
-            padding: 10px;
+            margin: 5px;
         }
         body {
             border: var(--borderwidth) solid black;
@@ -38,9 +46,9 @@
             text-align: center;
             flex-direction: column;
             min-width: min-content;
+            width:100%;
             align-items:center;
-            background:linear-gradient(#1e232f, #282f3e,#1e232f, #0f1115);
-            /* background: radial-gradient(1200px 600px at 50% 0%, #282f3e 0%, #0f1115 60%, #1e232f 100%); */
+            background:linear-gradient(var(--backMid), var(--backLight),var(--backMid), var(--backDark));
         }
         header{
             border: var(--borderwidth) solid red;
@@ -49,6 +57,12 @@
             flex-direction: row;
             align-items: center;
             justify-content: space-evenly;
+        }
+        h1, h2{
+            color: var(--titleColour);
+        }
+        h3, h4, h5, label{
+            color:var(--textColourDefault);
         }
         .debug{
             border: var(--borderwidth) solid blue;
@@ -67,10 +81,12 @@
             justify-content: space-evenly;
             align-items: flex-start;
             align-content: center;
-            /* min-width:90%; */
+            height:100%;
         }
         .sideBar{
+            background-color: var(--backDark);
             border: var(--borderwidth) solid blue;
+            border-radius: 16px;
             display:flex;
             height:100%;
             flex-direction: column;
@@ -82,7 +98,10 @@
         }
         .mainBlock{
             border: var(--borderwidth) solid yellow;
+            background-color: var(--backDarkMid);
+            border-radius: 16px;
             display:flex;
+            height:100%;
             flex-direction: column;
             flex-wrap: wrap;
             justify-content: center;
@@ -138,11 +157,20 @@
         .statePanel{
             border: var(--borderwidth) solid red;
             display:flex;
-            flex-direction: row;
+            flex-direction: column;
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
         }
+        .panel{
+            border: var(--borderwidth) solid orange;
+            display: flex;
+            flex-direction: row;
+            flex-wrap:wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
         .stateBlock{
             border: var(--borderwidth) solid green;
             display:flex;
@@ -155,6 +183,7 @@
         }
         #stateBox {
             border: var(--borderwidth) solid pink;
+            flex-direction: row;
         }
         .stateToggle{
             padding: 10px 20px;
@@ -204,8 +233,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-
-
         }
         .idBox{
             border: var(--borderwidth) solid orange;
@@ -242,12 +269,13 @@
             border-radius: 50%;
             border: calc(var(--S) * 0.03) solid #000;
             position: relative;
-            background: radial-gradient(160% 120% at 30% 30%, rgba(255. 255. 255. 0.18) 0%, transparent 35%), var(--baseColor, #222);
+            background: radial-gradient(160% 120% at 30% 30%, rgba(255, 255, 255, 0.18) 0%, transparent 35%), var(--baseColor, #222);
             box-shadow: inset 0 calc(var(--S) *0.07) calc(var(--S)*0.12) rgba(255, 255, 255, 0.06), inset 0 calc(var(--S)*0.10) calc(var(--S)*0.14) rgba(0,0,0,0.45);
             transition: box-shadow 140ms ease, background-color 140ms ease, filter 140ms ease;
         }
         .lamp.off {
             filter: saturate(0.85) brightness(0.75);
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.8);
         }
         .lamp.on.red {
             --baseColor: var(--trafficRedOn);
@@ -282,6 +310,24 @@
         .lamp.off.green {
             --baseColor: var(--trafficGreenOff);
         }
+        .stateGrid{
+            border:var(--borderwidth) solid yellow;
+            gap:10px;
+            display:grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+        .stateCell{
+            text-align: center;
+            padding:16px 8px;
+            border-radius: 8px;
+            background-color: var(--stateDefault);
+            font-weight: bold;
+            color: var(--textColourDefault);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition:background-color 0.3s ease;
+            font-size: 14px;
+            place-content: center;
+        }
     </style>
     <script>
         window.onload = function() {
@@ -296,10 +342,13 @@
                 bridgeState:        1,
                 nextState:          'Next State',
             }
+            const disblable = {
+                btn1:getElementById(eStopBtn)
+            }
             const traffic = {
-                red: document.getElementById('lamp-red'),
-                yellow: document.getElementById('lamp-yellow'),
-                green: document.getElementById('lamp-green'),
+                red: document.getElementById('redTraffic'),
+                yellow: document.getElementById('yellowTraffic'),
+                green: document.getElementById('greenTraffic'),
             }
 
 
@@ -310,6 +359,13 @@
                 btn.textContent = changeText ? onState?'Active':'InActive':btn.textContent;
                 btn.setAttribute('aria-pressed', onState ? 'true' : 'false');
             }
+            function setBtnDisable(btn, onState, changeText) {
+                btn.classList.toggle('on', onState);
+                btn.classList.toggle('off', !onState);
+                btn.textContent = changeText ? onState?'Active':'InActive':btn.textContent;
+                btn.setAttribute('aria-pressed', onState ? 'true' : 'false');
+                if (btn.getAttribute('aria-pressed')===false) btn.disabled = true;
+            }
             function setStateBox(el, onState) {
                 el.classList.toggle('on', onState);
                 el.classList.toggle('off', !onState);
@@ -317,9 +373,9 @@
             function setTrafficLight(state) {
                 allOff();
                 switch(state) {
-                    case 'red': setOn(red);
-                    case 'yellow': setOn(yellow);
-                    case 'green': setOn(green);
+                    case 0: setOn(red);
+                    case 1: setOn(yellow);
+                    case 2: setOn(green);
                 }
             }
             function allOff() {
@@ -345,39 +401,86 @@
                     cell.classList.toggle('active', i === stateNum);
                 }
             }
-
+//TODO add statuses
             function renderStatus() {
                 document.getElementById('status').textContent = 'Status: { }'
             }
+
+            function poll() {
+                fetch('/state')
+                .then(r=>r.json())
+                .then(applyState)
+                .catch(()=>{});
+            }
+
+            function applyState(s) {
+                setBtnDisable(document.getElementById('eStopBtn'), on(s.eStopBtn));
+                setBtn(document.getElementById('debugBtn'), on(s.debugBtn));
+                setBtn(document.getElementById('stateSwitchBtn'), state(s.stateSwitchBtn));
+                setBtn(document.getElementById('activateBridgeBtn'), on(s.activateBridgeBtn));
+                setStateBox(document.getElementById('photoCellState'), on(s.photoCellState));
+                setStateBox(document.getElementById('sonicState'), on(sonicState));
+                setTrafficLight(parseInt(s.trafficLightState));
+                setActiveState(parseInt(s.bridgeState));
+                document.getElementById('stateSwitchBtn').textContent = s.nextState || 'Next State';
+                renderStatus;
+            }
+
+            document.getElementById('eStopBtn').addEventListener('click', () => {
+                state.eStopBtn = state.eStopBtn ? 0 : 1;
+                fetch(state.eStopBtn ? '/eStop/on' : '/eStop/off');
+                renderStatus();
+            });
+
+            document.getElementById('debugBtn').addEventListener('click', () => {
+                state.debugBtn = state.debugBtn ? 0 : 1;
+                fetch(state.debugBtn ? '/debug/on' : '/debug/off');
+                renderStatus();
+            });
+
+            document.getElementById('stateSwitchBtn').addEventListener('click', () => {
+                state.stateSwitchBtn = state.stateSwitchBtn === 8 ? 1:state.stateSwitchBtn+1;
+                fetch('/switchState');
+                renderStatus();
+            });
+
+            document.getElementById('activateBridgeBtn').addEventListener('click', () => {
+                state.activateBridgeBtn = state.activateBridgeBtn ? 0 : 1;
+                fetch(state.activateBridgeBtn ? '/activateBridge/raise' : '/activateBridge/lower');
+                renderStatus();
+            });
+
+            poll();
+            setInterval(poll, 1000);
         }
 
     </script>
 </head>
 <body>
     <header>
-        <div class="title">title
-            <h1> WA8 Single Leaf Bridge </h1>
+        <div class="title">
+            <h1> Team WA8 Single Leaf Bridge </h1>
             <h2> Wireless Control Panel </h2>
         </div>
     </header>
     <main> 
-        <div class="sideBar" style="align-self:flex-start"> Side Bar
-            <div class="controlBlock"> controlBlock
+        <div class="sideBar" style="align-self:flex-start">
+            <div class="controlBlock">
                 <div class="box" id="buttonBox"> 
                     <label for="eStopBtn" class="controlLabel"> Emergency Stop </label>
                     <button id="eStopBtn" class="buttonToggle eStop on" aria-pressed="false" > OFF </button>
                 </div>
             </div>
-            <div class="controlBlock"> controlBlock
+            <div class="controlBlock">
                 <div class="box" id="buttonBox"> 
                     <label for="debugBtn" class="controlLabel"> Debug Mode </label>
                     <button id="debugBtn" class="buttonToggle debug on" aria-pressed="false" > OFF </button>
                 </div>
             </div>
-            <div class="idContainer"> idContainer
-                <div class="idContainer">idContainer
+            <div class="idContainer">
+                <div class="idContainer">
                     <h4>Systems: Group 88</h4>
-                    <div class="idBox">idBox
+                    <div class="idBox">
                         <h5>48253383 : Isabelle Farolan</h5>
                         <h5>48346992 : Brie McWhirter</h5>
                         <h5>47881453 : Nicholas Greenhouse</h5>
@@ -387,9 +490,9 @@
                         <h5>48275778 : Caleb Chew</h5>
                     </div>
                 </div>
-                <div class="idContainer">idContainer
+                <div class="idContainer">
                     <h4>Structures: Group 73</h4>
-                    <div class="idBox">idBox
+                    <div class="idBox">
                         <h5>47286091 : Adam Malvern</h5>
                         <h5>46375929 : Harry Vale</h5>
                         <h5>48347582 : Mohammad Haider</h5>
@@ -401,50 +504,74 @@
                 </div>
             </div>
         </div>
-        <div class="mainBlock"> Main Block
-            <section id="buttons"> Section
-                <div class="controlPanel">ControlPanel
-                    <h3>Manual Controls</h3>
-                    <div class="controlBlock"> controlBlock
-                        <div class="box" id="buttonBox"> 
-                            <label for="stateSwitchBtn" class="controlLabel"> Next State </label>
-                            <button id="stateSwitchBtn" class="buttonToggle off" aria-pressed="false" > State </button>
+        <div class="mainBlock">
+            <section id="buttons">
+                <div class="panel">
+                    <div class="controlPanel">
+                        <h3>Manual Controls</h3>
+                        <div class="controlBlock">
+                            <div class="box" id="buttonBox"> 
+                                <label for="stateSwitchBtn" class="controlLabel"> Next State </label>
+                                <button id="stateSwitchBtn" class="buttonToggle off" aria-pressed="false" > State </button>
+                            </div>
+                            <div class="box" id="buttonBox"> 
+                                <label for="activateBridgeBtn" class="controlLabel"> Activate Bridge </label>
+                                <button id="activateBridgeBtn" class="buttonToggle off" aria-pressed="false" > Still </button>
+                            </div>
                         </div>
-                        <div class="box" id="buttonBox"> 
-                            <label for="activateBridgeBtn" class="controlLabel"> Activate Bridge </label>
-                            <button id="activateBridgeBtn" class="buttonToggle off" aria-pressed="false" > Still </button>
+                    </div>
+                    <div class="statePanel">
+                        <h3>Sensor States</h3>
+                        <div class="box" id="stateBox">
+                            <div>
+                                <label> Photocell Sensor </label>
+                                <div id="photoCellState" class="stateCell">Not Detected</div>
+                            </div>
+                            <div>
+                                <label> UltraSonic Sensor </label>
+                                <div id="sonicState" class="stateCell">Not Detected</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="statePanel traffic">
+                    <h3>Traffic System Panel</h3>
+                    <div class="stateBlock">
+                        <div class="trafficLight">
+                            <div class="well">
+                                <div id="redTraffic" class="lamp on red" role="img" aria-label="Red light on"></div>
+                            </div>
+                            <div class="well">
+                                <div id="yellowTraffic" class="lamp off yellow" role="img" aria-label="Yellow light on"></div>
+                            </div>
+                            <div class="well">
+                                <div id="greenTraffic" class="lamp off green" role="img" aria-label="Green light on"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
-            <section id="states">Section
-                <div class="statePanel traffic">statepanel
-                    <div class="stateBlock">stateblock
-                        <div class="trafficLight">
-                            <div class="well">
-                                <div id="redTraffic" class="lamp red on" role="img" aria-label="Red light on"></div>
-                            </div>
-                            <div class="well">
-                                <div id="yellowTraffic" class="lamp yellow on" role="img" aria-label="Yellow light on"></div>
-                            </div>
-                            <div class="well">
-                                <div id="greenTraffic" class="lamp green on" role="img" aria-label="Green light on"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="statePanel">statepanel
-                    <div class="stateBlock">stateblock
-
+            <section id="states">
+                <div class="statePanel">
+                    <h3>Bridge State Panel</h3>
+                    <div class="stateGrid">
+                        <div id="state-1" class="stateCell"><h4>Lowered</h4></div>
+                        <div id="state-2" class="stateCell"><h4>Prepare Raise</h4></div>
+                        <div id="state-3" class="stateCell"><h4>Raising</h4></div>
+                        <div id="state-4" class="stateCell"><h4>Raised</h4></div>
+                        <div id="state-5" class="stateCell"><h4>Prepare Lower</h4></div>
+                        <div id="state-6" class="stateCell"><h4>Lowering</h4></div>
+                        <div id="state-7" class="stateCell"><h4>Emergency Lower</h4></div>
+                        <div id="state-8" class="stateCell"><h4>Emergency Raise</h4></div>
 
                     </div>
                 </div>
             </section>
         </div>        
     </main>
-    <footer>Footer
+    <footer>
         <p>Team WA8 Wifi Control Web-Based GUI for AP Access to the ESP32 Microcontroller for Controller over subsystems of the ENGG2000/3000 Scale Model Bridge Design/Contruction Project</p>
-        <a href="https://github.com/ChewOnThis/e2k-e3k-systems">GitHub Repository</a>
+        <a href="https://github.com/ChewOnThis/e2k-e3k-systems" target="_blank">GitHub Repository</a>
     </footer>
 </body>
 </html>

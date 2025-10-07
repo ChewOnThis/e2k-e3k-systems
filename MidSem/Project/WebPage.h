@@ -2,8 +2,8 @@
 #define WEBPAGE_H
 
 #include <Arduino.h>
-#include <Wifi.h>
-#include <Webserver.h>
+#include <WiFi.h>
+#include <WebServer.h>
 
 #define SSID "ESP32WA8"
 #define PASSWORD "12345678"
@@ -11,7 +11,7 @@
 extern IPAddress local_ip;
 extern IPAddress gateway;
 extern IPAddress subnet;
-extern Webserver server;
+extern WebServer server;
 
 void webPage_init();
 void webPage_setupRoutes();
