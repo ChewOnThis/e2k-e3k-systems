@@ -1,0 +1,7 @@
+Pulley Diameter: 40mm
+String Hypotenuse: 370mm
+Pulley circumfrence: 125.6mm
+
+Pulley Ratio: 1/1
+
+motor rotations for full lift: 3
