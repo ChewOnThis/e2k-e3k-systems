@@ -10,6 +10,7 @@ class Motor {
     public:
         Motor(uint8_t drive, uint8_t dir);
         void init();
+        void disable();
         void run(int pwm, int direction);
 };
 

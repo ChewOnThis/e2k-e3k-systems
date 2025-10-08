@@ -10,6 +10,12 @@ void Motor::init() {
     pinMode(DirectionPin, OUTPUT);
 }
 
+void Motor::disable()
+{
+    digitalWrite(DrivePin, LOW);
+    digitalWrite(DirectionPin, LOW);
+}
+
 void Motor::run (int pwm, int direction) {
     digitalWrite( DirectionPin , ((direction==1)?HIGH:LOW) );
     analogWrite( DrivePin, pwm );
