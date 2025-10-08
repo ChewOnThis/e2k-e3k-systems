@@ -12,8 +12,7 @@ void Motor::init() {
 
 void Motor::disable()
 {
-    digitalWrite(DrivePin, LOW);
-    digitalWrite(DirectionPin, LOW);
+    digitalWrite(DrivePin, digitalRead(DirectionPin));
 }
 
 void Motor::run (int pwm, int direction) {
