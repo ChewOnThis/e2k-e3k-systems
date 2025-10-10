@@ -9,6 +9,7 @@ void webPage_init() {
     WiFi.softAPConfig(local_ip, gateway, subnet);
     delay(100);
     webPage_setupRoutes();
+    Serial.println("routes Initialised");
     server.begin();
     Serial.println("HTTP Server Started");
 }
