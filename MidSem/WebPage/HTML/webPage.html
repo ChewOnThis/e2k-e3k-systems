@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale-1.0, "/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title> MidSem WA8 Control Panel </title>
     <style>
         :root{
@@ -79,16 +79,16 @@
             display:flex;
             flex-direction: row;
             justify-content: space-evenly;
-            align-items: flex-start;
+            align-items: stretch;
             align-content: center;
             height:100%;
         }
         .sideBar{
             background-color: var(--backDark);
+            background-color: green;
             border: var(--borderwidth) solid blue;
             border-radius: 16px;
             display:flex;
-            height:100%;
             flex-direction: column;
             flex-wrap: wrap;
             justify-content: center;
@@ -99,14 +99,15 @@
         .mainBlock{
             border: var(--borderwidth) solid yellow;
             background-color: var(--backDarkMid);
+            background-color:red;
             border-radius: 16px;
             display:flex;
-            height:100%;
             flex-direction: column;
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
             align-content: center;
+            max-width:785px;
         }
         section {
             border: var(--borderwidth) solid;
@@ -342,9 +343,7 @@
                 bridgeState:        1,
                 nextState:          'Next State',
             }
-            const disblable = {
-                btn1:getElementById(eStopBtn)
-            }
+
             const traffic = {
                 red: document.getElementById('redTraffic'),
                 yellow: document.getElementById('yellowTraffic'),
@@ -450,8 +449,8 @@
                 renderStatus();
             });
 
-            poll();
-            setInterval(poll, 1000);
+            // poll();
+            // setInterval(poll, 1000);
         }
 
     </script>
