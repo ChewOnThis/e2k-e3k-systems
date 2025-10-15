@@ -6,7 +6,7 @@ Sonic sonic2 (Pin_SonicTrigger_2, Pin_SonicEcho_2);
 Motor motor (Pin_DIR1, Pin_DIR2);
 
 
-bridgeState currentState;
+//bridgeState currentState;
 
 void setup(){
     Serial.begin(115200);
@@ -22,5 +22,5 @@ void setup(){
 }
 
 void loop() {
-    client.handle()
+    server.handleClient();
 }

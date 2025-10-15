@@ -14,6 +14,9 @@ class TrafficModule{
         void init();
         void updateLights();
         void cycle(int check);
+        void setRed(bool);
+        void setGreen(bool);
+        void setBlue(bool);
 };
 
 #endif
