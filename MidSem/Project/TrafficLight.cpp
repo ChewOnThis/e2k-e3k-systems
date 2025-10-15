@@ -13,6 +13,32 @@ void TrafficModule::init() {
     pinMode(greenPin, OUTPUT);
 }
 
-void TrafficModule::cycle() {
-    currentState = (currentState==2) ? 0 : currentState++ ;
+void TrafficModule::updateLights() {
+    switch (currentState) {
+        case 0:
+            digitalWrite(redPin, HIGH);
+            digitalWrite(yellowPin, LOW);
+            digitalWrite(greenPin, LOW);
+            break;
+        case 1:
+            digitalWrite(redPin, LOW);
+            digitalWrite(yellowPin, HIGH);
+            digitalWrite(greenPin, LOW);
+            break;
+        case 2:
+            digitalWrite(redPin, LOW);
+            digitalWrite(yellowPin, LOW);
+            digitalWrite(greenPin, HIGH);
+            break;
+    }
+}
+
+
+
+void TrafficModule::cycle(int check) {
+    currentState = (currentState++)%2 ;
+    if (currentState != check){
+        currentState = check;
+    }
+    updateLights();
 }

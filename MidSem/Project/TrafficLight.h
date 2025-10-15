@@ -12,7 +12,8 @@ class TrafficModule{
     public:
         TrafficModule(uint8_t red, uint8_t yellow, uint8_t green);
         void init();
-        void cycle();
+        void updateLights();
+        void cycle(int check);
 };
 
 #endif
