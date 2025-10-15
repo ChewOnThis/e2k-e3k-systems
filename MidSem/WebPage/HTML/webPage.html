@@ -85,7 +85,6 @@
         }
         .sideBar{
             background-color: var(--backDark);
-            background-color: green;
             border: var(--borderwidth) solid blue;
             border-radius: 16px;
             display:flex;
@@ -95,11 +94,11 @@
             align-items: center;
             align-content: center;
             justify-self: flex-start;
+            align-self: stretch;
         }
         .mainBlock{
             border: var(--borderwidth) solid yellow;
-            background-color: var(--backDarkMid);
-            background-color:red;
+            background-color: var(--backDark);
             border-radius: 16px;
             display:flex;
             flex-direction: column;
@@ -130,7 +129,7 @@
             font-size:12px; 
             text-align: center;
             width:var(--headFoot);
-            padding-top:40px;
+            padding-top:10px;
         }
         .box{
             border: var(--borderwidth) solid;
@@ -329,6 +328,9 @@
             font-size: 14px;
             place-content: center;
         }
+        .status{
+            color:var(--textColourDefault);
+        }
     </style>
     <script>
         window.onload = function() {
@@ -402,7 +404,7 @@
             }
 //TODO add statuses
             function renderStatus() {
-                document.getElementById('status').textContent = 'Status: { }'
+                document.getElementById('status').textContent = `Status: { eStopBtn: ${state.eStopBtn}, debugBtn: ${state.debugBtn}, stateSwitchBtn: ${state.stateSwitchBtn}, activateBridgeBtn: ${state.activateBridgeBtn}, photoCellState: ${state.photoCellState}, sonicState: ${state.sonicState}, trafficLightState: ${state.trafficLightState}, bridgeState: ${state.bridgeState}, nextState: ${state.nextState}  }`
             }
 
             function poll() {
@@ -463,7 +465,7 @@
         </div>
     </header>
     <main> 
-        <div class="sideBar" style="align-self:flex-start">
+        <div class="sideBar">
             <div class="controlBlock">
                 <div class="box" id="buttonBox"> 
                     <label for="eStopBtn" class="controlLabel"> Emergency Stop </label>
@@ -568,6 +570,14 @@
             </section>
         </div>        
     </main>
+    <section>
+        <div class="status">
+            <div class="status">Status: {</div>
+            <div class="status">eStopBtn: 0, debugBtn: 0, stateSwitchBtn: 0</div>
+            <div class="status">photoCellState: 0, sonicState: 0, activateBridgeBtn: 0</div>
+            <div class="status">trafficLightState: 0, bridgeState: 1, nextState: Next State }</div>
+        </div>
+    </section>
     <footer>
         <p>Team WA8 Wifi Control Web-Based GUI for AP Access to the ESP32 Microcontroller for Controller over subsystems of the ENGG2000/3000 Scale Model Bridge Design/Contruction Project</p>
         <a href="https://github.com/ChewOnThis/e2k-e3k-systems" target="_blank">GitHub Repository</a>
