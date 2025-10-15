@@ -14,7 +14,7 @@ enum bridgeState : uint8_t {
     emergencyRaise = 8
 };
 
+extern bridgeState currentState;
 void stateMachine(bridgeState state);
-void stateCycle();
 
 #endif
