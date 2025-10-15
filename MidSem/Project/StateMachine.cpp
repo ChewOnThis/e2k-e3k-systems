@@ -51,7 +51,7 @@ void stateMachine(bridgeState state) {
 
     // === PREP TO RAISE ===
     case prepareRaise:
-      trafficLight.cycle(0);
+      TrafficLight.cycle(0);
 
       Serial.println("STATE: PREP TO RAISE — waiting before lifting");
       startTime = millis();
@@ -86,7 +86,7 @@ void stateMachine(bridgeState state) {
     // === UP (raised) ===
     case raised:
       Serial.println("STATE: UP (bridge up for boats)");
-      trafficLight.cycle(0);
+      TrafficLight.cycle(0);
 
 
       if (areaClear()) {
@@ -98,7 +98,7 @@ void stateMachine(bridgeState state) {
     // === PREP TO LOWER ===
     case prepareLower:
       Serial.println("STATE: PREP TO LOWER");
-      trafficLight.cycle(0);
+      TrafficLight.cycle(0);
       
       startTime = millis();
 
@@ -125,7 +125,7 @@ void stateMachine(bridgeState state) {
       else if (bottomLimitHit() || motionTimeout()) {
         stopMotor();
         Serial.println("Bridge fully lowered → DOWN");
-        trafficLight.cycle(2);
+        TrafficLight.cycle(2);
         
         currentState = lowered;
       }
