@@ -32,15 +32,18 @@ void setup(){
 void loop() {
     server.handleClient();
     
-    // Run the state machine
+    // Run the state machine with current state
     stateMachine(currentState);
     
     // Periodic debug sensor logging every 10 seconds
     static unsigned long lastDebugLog = 0;
-    if (millis() - lastDebugLog > 10000) {
+    const unsigned long debugInterval = 10000; // 10 seconds
+    
+    if (millis() - lastDebugLog >= debugInterval) {
         debugLogSensors();
         lastDebugLog = millis();
     }
     
-    delay(100); // Small delay to prevent overwhelming the system
+    // Small delay to prevent overwhelming the system
+    delay(50);
 }

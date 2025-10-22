@@ -22,4 +22,7 @@ void debugLog(const char* message);
 void debugLogSensors();
 void debugLogStateChange(bridgeState newState);
 
+// Helper function to get state name as string
+const char* getStateName(bridgeState state);
+
 #endif

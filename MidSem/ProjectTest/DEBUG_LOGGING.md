@@ -1,7 +1,7 @@
 # Debug Logging System
 
 ## Overview
-Basic debug information logging has been added to the bridge control system to help with troubleshooting and monitoring system behavior.
+Enhanced debug information logging has been added to the bridge control system to help with troubleshooting and monitoring system behavior. The system now includes improved state management and memory optimization.
 
 ## Debug Functions
 
@@ -9,16 +9,23 @@ Basic debug information logging has been added to the bridge control system to h
 Logs a general debug message with timestamp.
 - **Format**: `[DEBUG] {timestamp}ms: {message}`
 - **Example**: `[DEBUG] 15234ms: Boat detected, preparing to raise bridge`
+- **Memory**: Uses F() macro to store strings in flash memory
 
 ### `debugLogSensors()`
 Logs the current state of all sensors.
 - **Format**: `[SENSORS] {timestamp}ms - EStop:{state} | TopLimit:{state} | BottomLimit:{state} | Sonic:{distance}cm`
 - **Example**: `[SENSORS] 15234ms - EStop:CLEAR | TopLimit:CLEAR | BottomLimit:HIT | Sonic:245cm`
+- **Memory**: Optimized with F() macro for reduced RAM usage
 
 ### `debugLogStateChange(bridgeState newState)`
 Logs when the state machine changes to a new state.
 - **Format**: `[STATE] {timestamp}ms: Changing to {STATE_NAME}`
 - **Example**: `[STATE] 15234ms: Changing to PREPARE_RAISE`
+
+### `getStateName(bridgeState state)`
+Helper function that returns the string name of a bridge state.
+- **Returns**: Constant string representing the state name
+- **Safety**: Includes bounds checking to prevent array overflow
 
 ## When Debug Information is Logged
 
@@ -76,16 +83,40 @@ Logs when the state machine changes to a new state.
 - **State changes** track the decision-making process
 - **Debug messages** provide context for why actions are taken
 
+## Code Improvements
+
+### State Management
+- **Improved State Tracking**: Uses `previousState` variable instead of static local variable for better state management
+- **One-time Initialization**: States that require initialization (motor start, timer setup) now use static flags to ensure operations happen only once per state entry
+- **Cleaner State Logic**: Removed redundant Serial.println statements, consolidating output through debug functions
+
+### Memory Optimization
+- **Flash Memory Usage**: Uses F() macro to store constant strings in flash memory instead of RAM
+- **Reduced Duplication**: Centralized state name handling with `getStateName()` function
+- **Bounds Checking**: Added safety checks to prevent array access violations
+
+### Performance Improvements
+- **Reduced Loop Delay**: Decreased main loop delay from 100ms to 50ms for more responsive operation
+- **Efficient Timing**: Better use of timing constants and consistent interval checking
+- **Optimized Logging**: Reduced redundant debug output while maintaining essential information
+
+### Code Quality
+- **Consistent Formatting**: Improved code structure and readability
+- **Better Function Organization**: Logical grouping of related functions
+- **Enhanced Comments**: More descriptive comments explaining state behavior
+
 ## Configuration
 
 The debug logging is enabled by default. To modify behavior:
 
-1. **Change logging frequency**: Modify the 10-second interval in `main.cpp`
+1. **Change logging frequency**: Modify the `debugInterval` constant in `main.cpp`
 2. **Add custom debug messages**: Use `debugLog("your message")` in your code
 3. **Disable specific logging**: Comment out `debugLogSensors()` calls as needed
+4. **Memory optimization**: All debug strings use F() macro for flash storage
 
 ## Files Modified
 
-- `StateMachine.h` - Added debug function declarations
-- `StateMachine.cpp` - Implemented debug functions and added logging throughout state machine
-- `main.cpp` - Added debug logging to setup and loop, periodic sensor monitoring
+- `StateMachine.h` - Added debug function declarations and helper function
+- `StateMachine.cpp` - Implemented optimized debug functions, improved state management, and memory usage
+- `main.cpp` - Enhanced main loop with better timing and state machine integration
+- `DEBUG_LOGGING.md` - Updated documentation with improvements and new features
