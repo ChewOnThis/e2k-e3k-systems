@@ -1,0 +1,46 @@
+
+// Ultrasonic Sensor Test (HC-SR04) 
+// Works on  ESP32
+
+
+const int trigPin = 8;   //u can change if needed
+const int echoPin = 9;   // u can  change if needed
+
+long duration;
+float distanceCm;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+
+  Serial.println("=== Ultrasonic Sensor Test ===");
+  Serial.println("Measuring distance every 500ms...");
+  delay(1000);
+}
+
+void loop() {
+  // Send trigger pulse
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // Read echo pulse
+  duration = pulseIn(echoPin, HIGH, 30000); // 30 ms timeout
+
+  // Convert duration to distance (in cm)
+  distanceCm = (duration * 0.0343) / 2.0;
+
+  // Print distance
+  Serial.print("Distance: ");
+  if (distanceCm == 0) {
+    Serial.println("No object detected / out of range");
+  } else {
+    Serial.print(distanceCm);
+    Serial.println(" cm");
+  }
+
+  delay(500);
+}
