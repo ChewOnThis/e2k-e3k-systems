@@ -7,6 +7,7 @@
 #include "DCMotor.h"
 #include "SonicSensor.h"
 #include "TrafficLight.h"
+#include "BridgeConfig.h"
 
 #define Pin_LS_2             4
 #define Pin_DIR2            12

@@ -2,6 +2,7 @@
 #define STATEMACHINE_H
 
 #include <Arduino.h>
+#include "BridgeConfig.h"
 
 enum bridgeState : uint8_t {
     lowered = 1,
