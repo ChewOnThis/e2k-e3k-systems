@@ -1,4 +1,5 @@
 #include "WebPage.h"
+#include "main.h"
 
 IPAddress local_ip  (192, 168, 1, 1);
 IPAddress gateway   (192, 168, 1, 1);
@@ -534,8 +535,10 @@ String createHTML() {
     str += "                renderStatus();\n";
     str += "            });\n";
     str += "\n";
-    str += "            // poll();\n";
-    str += "            // setInterval(poll, 1000);\n";
+    str += "            poll();\n";
+    str += "            setInterval(poll, ";
+    str += WebServer_PollingRate;
+    str += ");\n";
     str += "        }\n";
     str += "\n";
     str += "    </script>\n";
