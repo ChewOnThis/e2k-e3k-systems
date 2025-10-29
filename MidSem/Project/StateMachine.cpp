@@ -51,7 +51,7 @@ void stateMachine(bridgeState state) {
 
     // === PREP TO RAISE ===
     case prepareRaise:
-      TrafficLight.cycle(0);
+      trafficLight.cycle(0);
 
       Serial.println("STATE: PREP TO RAISE — waiting before lifting");
       startTime = millis();
