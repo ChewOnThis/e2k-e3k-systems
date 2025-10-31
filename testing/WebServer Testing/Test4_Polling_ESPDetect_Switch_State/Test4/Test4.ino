@@ -18,8 +18,8 @@ int photostate = 0;
 int photopin = 36;
 
 int buttonpin1 = 23;
-int buttonpin2 = 4;
-int buttonpin3 = 15;
+int buttonpin2 = 6;
+int buttonpin3 = 7;
 
 int trafficredpin = 25;
 int trafficyellowpin = 26;
@@ -87,69 +87,69 @@ void loop() {
         Serial.println("LOW");
     }
             
-    photostate = analogRead(photopin);
-    //Serial.println(photostate);
-    //delay(100);
-    if (photostate < 650) {
-        digitalWrite(pin, HIGH);
-    } else {
-        digitalWrite(pin, LOW);
-    }
+    // photostate = analogRead(photopin);
+    // //Serial.println(photostate);
+    // //delay(100);
+    // if (photostate < 650) {
+    //     digitalWrite(pin, HIGH);
+    // } else {
+    //     digitalWrite(pin, LOW);
+    // }
 
 
-    // delay(100);
-    int temp = digitalRead(buttonpin1);
-    if (temp != 1) {
-        buttonState1 = !buttonState1;
-    }
-    digitalWrite(statuspin, buttonState1);
+    // // delay(100);
+    // int temp = digitalRead(buttonpin1);
+    // if (temp != 1) {
+    //     buttonState1 = !buttonState1;
+    // }
+    // digitalWrite(statuspin, buttonState1);
 
-    digitalWrite(trigPin1, LOW);  
-	delayMicroseconds(2);  
-	digitalWrite(trigPin1, HIGH);  
-	delayMicroseconds(10);  
-	digitalWrite(trigPin1, LOW);
-    duration1 = pulseIn(echoPin1, HIGH);
-    distance1 = (duration1*.0343)/2;
-    Serial.print("Distance1:");  
-	Serial.println(distance1);  
-	delay(100);
+    // digitalWrite(trigPin1, LOW);  
+	// delayMicroseconds(2);  
+	// digitalWrite(trigPin1, HIGH);  
+	// delayMicroseconds(10);  
+	// digitalWrite(trigPin1, LOW);
+    // duration1 = pulseIn(echoPin1, HIGH);
+    // distance1 = (duration1*.0343)/2;
+    // Serial.print("Distance1:");  
+	// Serial.println(distance1);  
+	// delay(100);
 
-    digitalWrite(trigPin2, LOW);  
-	delayMicroseconds(2);  
-	digitalWrite(trigPin2, HIGH);  
-	delayMicroseconds(10);  
-	digitalWrite(trigPin2, LOW);
-    duration2 = pulseIn(echoPin2, HIGH);
-    distance2 = (duration2*.0343)/2;
-    Serial.print("Distance2:");  
-	Serial.println(distance2);  
-	delay(100);
+    // digitalWrite(trigPin2, LOW);  
+	// delayMicroseconds(2);  
+	// digitalWrite(trigPin2, HIGH);  
+	// delayMicroseconds(10);  
+	// digitalWrite(trigPin2, LOW);
+    // duration2 = pulseIn(echoPin2, HIGH);
+    // distance2 = (duration2*.0343)/2;
+    // Serial.print("Distance2:");  
+	// Serial.println(distance2);  
+	// delay(100);
 
-    switch(state) {
-        case 0:
-            digitalWrite(trafficgreenpin, HIGH);
-            digitalWrite(trafficyellowpin, LOW);
-            digitalWrite(trafficredpin, LOW);
-            if (distance1 < 30 | distance2 < 30) {
-                state ++;
-            }
+    // switch(state) {
+    //     case 0:
+    //         digitalWrite(trafficgreenpin, HIGH);
+    //         digitalWrite(trafficyellowpin, LOW);
+    //         digitalWrite(trafficredpin, LOW);
+    //         if (distance1 < 30 | distance2 < 30) {
+    //             state ++;
+    //         }
 
-            break;
-        case 1:
-            digitalWrite(trafficgreenpin, LOW);
-            digitalWrite(trafficyellowpin, HIGH);
-            digitalWrite(trafficredpin, LOW);
-            state++;
-            break;
-        case 2:
-            digitalWrite(trafficgreenpin, LOW);
-            digitalWrite(trafficyellowpin, LOW);
-            digitalWrite(trafficredpin, HIGH);
-            if (distance1 > 30 & distance2 > 30) {
-                state = 0;}
-            break;
-    }
+    //         break;
+    //     case 1:
+    //         digitalWrite(trafficgreenpin, LOW);
+    //         digitalWrite(trafficyellowpin, HIGH);
+    //         digitalWrite(trafficredpin, LOW);
+    //         state++;
+    //         break;
+    //     case 2:
+    //         digitalWrite(trafficgreenpin, LOW);
+    //         digitalWrite(trafficyellowpin, LOW);
+    //         digitalWrite(trafficredpin, HIGH);
+    //         if (distance1 > 30 & distance2 > 30) {
+    //             state = 0;}
+    //         break;
+    // }
     
     //server.handleClient();
 }

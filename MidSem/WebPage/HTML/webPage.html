@@ -46,12 +46,16 @@
             text-align: center;
             flex-direction: column;
             min-width: min-content;
+            min-height: 100vh;
+            margin:0;
+            padding:0;
             width:100%;
             align-items:center;
             background:linear-gradient(var(--backMid), var(--backLight),var(--backMid), var(--backDark));
         }
         header{
             border: var(--borderwidth) solid red;
+            border-radius: 10px;
             width: var(--headFoot);
             display: flex;
             flex-direction: row;
@@ -70,6 +74,9 @@
         }
         .title{
             border: var(--borderwidth) solid black;
+            background:var(--backDark);
+            border-radius: 10px;
+            padding: 10px 24%;
             display: flex;
             justify-self: center;
             flex-direction: column;
@@ -78,6 +85,7 @@
             border: var(--borderwidth) solid green;
             display:flex;
             flex-direction: row;
+            flex-grow: 1;
             justify-content: space-evenly;
             align-items: stretch;
             align-content: center;
@@ -112,6 +120,7 @@
             border: var(--borderwidth) solid;
             display:flex;
             flex-wrap: wrap;
+            flex-grow: 1;
             gap:10px;
             justify-content: center;
             align-items: center;
@@ -130,6 +139,7 @@
             text-align: center;
             width:var(--headFoot);
             padding-top:10px;
+            margin-top: 0;
         }
         .box{
             border: var(--borderwidth) solid;
@@ -420,7 +430,7 @@
                 setBtn(document.getElementById('stateSwitchBtn'), state(s.stateSwitchBtn));
                 setBtn(document.getElementById('activateBridgeBtn'), on(s.activateBridgeBtn));
                 setStateBox(document.getElementById('photoCellState'), on(s.photoCellState));
-                setStateBox(document.getElementById('sonicState'), on(sonicState));
+                setStateBox(document.getElementById('sonicState'), on(s.sonicState));
                 setTrafficLight(parseInt(s.trafficLightState));
                 setActiveState(parseInt(s.bridgeState));
                 document.getElementById('stateSwitchBtn').textContent = s.nextState || 'Next State';
@@ -451,8 +461,8 @@
                 renderStatus();
             });
 
-            // poll();
-            // setInterval(poll, 1000);
+            poll();
+            setInterval(poll, 1000);
         }
 
     </script>
@@ -571,7 +581,7 @@
         </div>        
     </main>
     <section>
-        <div class="status">
+        <div class="status" id="status">
             <div class="status">Status: {</div>
             <div class="status">eStopBtn: 0, debugBtn: 0, stateSwitchBtn: 0</div>
             <div class="status">photoCellState: 0, sonicState: 0, activateBridgeBtn: 0</div>

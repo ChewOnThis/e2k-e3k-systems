@@ -13,6 +13,8 @@ extern IPAddress gateway;
 extern IPAddress subnet;
 extern WebServer server;
 
+String stateName();
+
 void webPage_init();
 void webPage_setupRoutes();
 

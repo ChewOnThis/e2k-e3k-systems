@@ -17,4 +17,16 @@ enum bridgeState : uint8_t {
 extern bridgeState currentState;
 void stateMachine(bridgeState state);
 
+bool eStopPressed();
+bool topLimitHit();
+bool bottomLimitHit();
+bool boatDetected();
+bool timerFinished();
+bool timerUp();
+void startMotorUp();
+void startMotorDown();
+void stopMotor();
+
+
+
 #endif

@@ -2,6 +2,7 @@
 #define MAIN_H
 
 #include <Arduino.h>
+#include <TimerOne.h>
 #include "WebPage.h"
 #include "StateMachine.h"
 #include "DCMotor.h"
@@ -12,11 +13,11 @@
 #define Pin_DIR2            12
 #define Pin_DIR1            13 
 #define Pin_BoatLight       14
-#define Pin_LS_1            16
-#define Pin_LS_2            17
+#define Pin_LS_Bottom       16
+#define Pin_LS_Top          17
 #define Pin_Street          18
-#define Pin_Status          19
-#define Pin_Buzzer          21
+#define Pin_Status          21
+#define Pin_Buzzer          19
 #define Pin_BridgeMove      22
 #define Pin_EStop           23
 #define Pin_TrafficRed      25
@@ -34,9 +35,30 @@
 #define WebServer_SSID          "ESP32WA8"
 #define WebServer_Password      "12345678"
 
+#define ISPRESSED LOW
+
+
+struct GlobalStates {
+   bool eStopBtn;
+   bool debugBtn;
+   bool stateSwitch;
+   bool activateBridgeBtn;
+   bool photoCellState;
+   bool sonicState;
+   int trafficState;
+   bridgeState BridgeState;
+};
+
 extern TrafficModule traffic;
 extern Sonic sonic1;
 extern Sonic sonic2;
-extern Motor motor;
+extern Motor motor ;
+extern GlobalStates states;
+void initStates();
+void disableMotor();
+extern bridgeState currentState;
+
+extern bool EStop;
+
 
 #endif
