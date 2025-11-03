@@ -14,6 +14,7 @@ int durationB;
 
 
 
+
 void setup() {
   Serial.begin (115200);
   pinMode(trigPinA, OUTPUT);

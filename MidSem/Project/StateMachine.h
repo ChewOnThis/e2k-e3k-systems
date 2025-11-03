@@ -26,7 +26,8 @@ bool timerUp();
 void startMotorUp();
 void startMotorDown();
 void stopMotor();
-
+void topInterrupt();
+void bottomInterrupt();
 
 
 #endif

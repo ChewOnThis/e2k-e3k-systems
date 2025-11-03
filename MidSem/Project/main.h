@@ -56,6 +56,8 @@ extern Motor motor ;
 extern GlobalStates states;
 void initStates();
 void disableMotor();
+void initInterrupts();
+void streetLights();
 extern bridgeState currentState;
 
 extern bool EStop;
