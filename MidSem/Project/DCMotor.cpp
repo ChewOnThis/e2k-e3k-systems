@@ -13,8 +13,11 @@ void Motor::init() {
 void Motor::disable()
 {
     // digitalWrite(DrivePin, digitalRead(DirectionPin));
+    Serial.println("Start disable");
+    analogWrite(DrivePin, 0);
     digitalWrite(DrivePin, LOW);
     digitalWrite(DirectionPin, LOW);
+    Serial.println("Done Disable");
 }
 
 void Motor::run (int pwm, int direction) {

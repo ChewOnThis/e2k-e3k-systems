@@ -9,7 +9,7 @@
 #include "SonicSensor.h"
 #include "TrafficLight.h"
 
-#define Pin_PhotoCell        4
+#define Pin_PhotoCell       34
 #define Pin_DIR2            12
 #define Pin_DIR1            13 
 #define Pin_BoatLight       14
@@ -28,7 +28,7 @@
 #define Pin_SonicEcho_2     36
 #define Pin_SonicEcho_1     39
 
-#define MotorSpeed_Fast
+#define MotorSpeed_Fast 
 #define MotorSpeed_Slow
 
 #define WebServer_PollingRate   1000 //ms

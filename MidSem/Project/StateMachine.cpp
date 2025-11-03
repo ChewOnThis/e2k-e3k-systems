@@ -8,21 +8,38 @@
 
 // Timers
 unsigned long startTime = 0;
-const unsigned long actionDelay = 10000; // wait before next action
+const unsigned long lowerDelay = 10000; // wait before next action
+const unsigned long yellowDelay = 5000;
+const int boatcount_required = 4;
+const int detection_distance = 30;
+const int seabed_distance = 20;
 int boatDetection_count = 0;
 extern bool EStop;
+bool status_on = false;
+
+unsigned long slowthefuckdown = 0;
+const unsigned long delaytimebitch = 550;
+
+
+
+
 
 
 
 // Helper functions
-
+void flash(int pin)    { status_on = !status_on; digitalWrite(pin, status_on); }
+bool blink()           { if (millis() - slowthefuckdown < delaytimebitch) {return false;} else {slowthefuckdown = millis(); return true;} }
 void bottomInterrupt() { detachInterrupt(digitalPinToInterrupt(Pin_LS_Top));     attachInterrupt(digitalPinToInterrupt(Pin_LS_Bottom), disableMotor, FALLING);}
 void topInterrupt()    { detachInterrupt(digitalPinToInterrupt(Pin_LS_Bottom));  attachInterrupt(digitalPinToInterrupt(Pin_LS_Top), disableMotor, FALLING);}
-bool eStopPressed()    { bool temp = !digitalRead(Pin_EStop); Serial.println("EStop" + (String)temp); return temp;}
-bool topLimitHit()     { bool temp = !digitalRead(Pin_LS_Top); Serial.println("Top" + (String)temp); return temp;}
-bool bottomLimitHit()  { bool temp = !digitalRead(Pin_LS_Bottom); Serial.println("Bottom" + (String)temp); return temp;}
-bool boatDetected()    { return sonic1.poll_cm() < 100 && sonic2.poll_cm() < 100; }     // boat nearby
-bool timerFinished()   { Serial.println(millis()); Serial.println(startTime); return (millis() - startTime) > actionDelay; }
+bool eStopPressed()    { bool temp = !digitalRead(Pin_EStop); return temp;}
+bool topLimitHit()     { bool temp = !digitalRead(Pin_LS_Top); return temp;}
+bool bottomLimitHit()  { bool temp = !digitalRead(Pin_LS_Bottom);  return temp;}
+bool boatDetected()    { 
+  double dist1 = sonic1.poll_cm(); 
+  double dist2 = sonic2.poll_cm(); 
+  Serial.print("Dist: " + (String)dist1 + " - " + (String)dist2); 
+  return dist1 < detection_distance || dist2 < detection_distance; }     // boat nearby
+bool timerFinished(long delay)   { /*Serial.println(millis());*/ /*Serial.println(startTime);*/ return (millis() - startTime) > delay; }
 bool timerUp()         { return millis() - startTime > 8000;}
 void startMotorUp()    { motor.run(64, 1); Serial.println("Motor UP started."); }
 void startMotorDown()  { motor.run(64, 0); Serial.println("Motor DOWN started."); }
@@ -32,7 +49,7 @@ void stopMotor()       { motor.disable(); Serial.println("Motor stopped."); }
 // Main state machine logic
 
 void stateMachine(bridgeState state) {
-  Serial.println(state);
+  // Serial.println(state);
   // EStop = eStopPressed();
   // if (EStop) {
   //   switch (state) {
@@ -57,27 +74,34 @@ void stateMachine(bridgeState state) {
   switch (state) {
     //  DOWN (lowered) 
     case lowered:
+      digitalWrite(Pin_Status, LOW);
+      digitalWrite(Pin_Buzzer, LOW);
       traffic.cycle(2); //2 = Green
-      Serial.println("STATE: DOWN - Road Traffic Accepted");
+      // Serial.println("STATE: DOWN - Road Traffic Accepted");
       if (boatDetected()) {
         boatDetection_count++;
       }
-      if (boatDetection_count >= 2) {
-        Serial.println("Boat detected → PREPARE TO RAISE");
+      if (boatDetection_count >= boatcount_required) {
+        // Serial.println("Boat detected → PREPARE TO RAISE");
+        boatDetection_count = 0;
         currentState = prepareRaise;
+        Serial.println("STATE: PREP TO RAISE — waiting before lifting");
         startTime = millis();
       }
       break;
 
     // === PREP TO RAISE ===
     case prepareRaise:
+      digitalWrite(Pin_Status, HIGH);
+      if (blink())flash(Pin_Buzzer);
       traffic.cycle(1);
-      Serial.println("STATE: PREP TO RAISE — waiting before lifting");
+      // Serial.println("STATE: PREP TO RAISE — waiting before lifting");
       
-      Serial.println(timerFinished());
-      if (timerFinished()) {
+      Serial.println(timerFinished(yellowDelay));
+      if (timerFinished(yellowDelay)) {
         topInterrupt();
-        Serial.println("Prep timer done → RAISING");
+        // Serial.println("Prep timer done → RAISING");
+        Serial.println("Bridge fully raised → UP");
         currentState = raising;
         startMotorUp();
       }
@@ -85,13 +109,17 @@ void stateMachine(bridgeState state) {
 
     // === RAISING ===
     case raising:
+      digitalWrite(Pin_Buzzer, LOW);
+      if (blink())flash(Pin_Status);
       traffic.cycle(0);
-      Serial.println("STATE: RAISING");
+      // Serial.println("STATE: RAISING");
       
       startTime = millis();
       if (topLimitHit()) {
         stopMotor();
-        Serial.println("Bridge fully raised → UP");
+        Serial.println("STATE: UP (bridge up for boats)");
+
+        // Serial.println("Bridge fully raised → UP");
         currentState = raised;
         startTime = millis();
       }
@@ -99,38 +127,48 @@ void stateMachine(bridgeState state) {
 
     // === UP (raised) ===
     case raised:
-      Serial.println("STATE: UP (bridge up for boats)");
+      digitalWrite(Pin_Status, LOW);
+      digitalWrite(Pin_Buzzer, LOW);
+      // Serial.println("STATE: UP (bridge up for boats)");
       traffic.cycle(0);
       if (timerUp()) {
-        Serial.println("Boat clear → PREPARE TO LOWER");
+        // Serial.println("Boat clear → PREPARE TO LOWER");
         currentState = prepareLower;
+      Serial.println("STATE: PREP TO LOWER");
+
         startTime = millis();
       }
       break;
 
     // === PREP TO LOWER ===
     case prepareLower:
-      Serial.println("STATE: PREP TO LOWER");
+      digitalWrite(Pin_Status, HIGH);
+      if (blink())flash(Pin_Buzzer);
+      // Serial.println("STATE: PREP TO LOWER");
       traffic.cycle(0);
-      if (timerFinished()) {
+      if (timerFinished(lowerDelay)) {
         bottomInterrupt();
-        Serial.println("Prep timer done → LOWERING");
+        // Serial.println("Prep timer done → LOWERING");
         currentState = lowering;
         startMotorDown();
         startTime = millis();
+      Serial.println("STATE: LOWERING");
+
       }
       break;
 
     // === LOWERING ===
     case lowering:
-      Serial.println("STATE: LOWERING");
+      // Serial.println("STATE: LOWERING");
+      digitalWrite(Pin_Buzzer, LOW);
+      if (blink())flash(Pin_Status);
       
-      startTime = millis();
-      if (bottomLimitHit() || (millis() - startTime > 1000 && topLimitHit())) {
+      if (bottomLimitHit()) {
         stopMotor();
-        Serial.println("Bridge fully lowered → DOWN");
+        // Serial.println("Bridge fully lowered → DOWN");
         traffic.cycle(2);
         currentState = lowered;
+        startTime = millis();
       }
       break;
 

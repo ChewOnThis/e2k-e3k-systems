@@ -7,7 +7,7 @@ enum bridgeState : uint8_t {
     lowered = 1,
     prepareRaise = 2,
     raising = 3,
-    raised = 4,
+    raised = 4, 
     prepareLower = 5,
     lowering = 6,
     emergencyLower = 7,
@@ -16,12 +16,13 @@ enum bridgeState : uint8_t {
 
 extern bridgeState currentState;
 void stateMachine(bridgeState state);
-
+void buzzerBeep();
+void statusFlash();
 bool eStopPressed();
 bool topLimitHit();
 bool bottomLimitHit();
 bool boatDetected();
-bool timerFinished();
+bool timerFinished(long delay);
 bool timerUp();
 void startMotorUp();
 void startMotorDown();

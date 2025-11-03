@@ -7,7 +7,7 @@ Sonic::Sonic(int trig, int echo) {
 
 void Sonic::init() {
     pinMode(trigPin, OUTPUT);
-    pinMode(echoPin, OUTPUT);
+    pinMode(echoPin, INPUT);
 }
 
 double Sonic::pollRaw() {
@@ -17,6 +17,7 @@ double Sonic::pollRaw() {
     delayMicroseconds(10);
     digitalWrite(trigPin, LOW);
     return pulseIn(echoPin, HIGH);
+    // return (double)fuck;
 }
 
 double Sonic::poll_cm() {

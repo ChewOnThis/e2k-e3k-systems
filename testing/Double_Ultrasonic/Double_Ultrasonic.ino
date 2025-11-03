@@ -28,10 +28,10 @@ class Ultrasonic
 		int _echo;
 };
 
-#define TRIGGER_PIN_1 2
-#define ECHO_PIN_1 		3
-#define TRIGGER_PIN_2 4
-#define ECHO_PIN_2 		5
+#define TRIGGER_PIN_1 33
+#define ECHO_PIN_1 		39
+#define TRIGGER_PIN_2 32
+#define ECHO_PIN_2 		36
 
 Ultrasonic sensor1(TRIGGER_PIN_1, ECHO_PIN_1);
 Ultrasonic sensor2(TRIGGER_PIN_2, ECHO_PIN_2);

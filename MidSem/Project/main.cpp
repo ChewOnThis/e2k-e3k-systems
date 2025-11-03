@@ -54,10 +54,14 @@ void initStates() {
     pinMode(Pin_LS_Top, INPUT_PULLUP);
     pinMode(Pin_PhotoCell, INPUT);
     pinMode(Pin_Street, OUTPUT);
+    pinMode(Pin_Status, OUTPUT);
+    pinMode(Pin_Buzzer, OUTPUT);
 }
 
 void loop() {
-    server.handleClient();
+
+
+    // server.handleClient();
     stateMachine(currentState);
     streetLights();
     // Serial.print("LS1: " + (String)!digitalRead(Pin_LS_Bottom) + " , ");
@@ -65,8 +69,17 @@ void loop() {
 
 }
 
+int lightLevelSamples = 20;
+
 void streetLights() {
-    bool temp = (analogRead(Pin_PhotoCell) >= 500) ? HIGH : LOW;
+    int lightLevel = 0;
+    for (int i=0; i < lightLevelSamples; i++)
+    {
+        lightLevel += analogRead(Pin_PhotoCell);
+    }
+    lightLevel /= lightLevelSamples;
+
+    bool temp = (lightLevel >= 800) ? LOW : HIGH;
     if (temp != digitalRead(Pin_Street)) {
         digitalWrite(Pin_Street, temp);
         Serial.println("StreetLight change: " + (String)temp);

@@ -7,10 +7,10 @@ volatile unsigned long LastPulseTimeB;
 int durationA;
 int durationB;
 //unsigned long startTime;
-#define trigPinA 4
-#define echoPinA 2
-#define trigPinB 5
-#define echoPinB 3
+#define trigPinA 33
+#define echoPinA 39
+#define trigPinB 32
+#define echoPinB 36
 
 
 
@@ -53,7 +53,7 @@ void loop(){
   // Serial.println("cm");
 	Serial.println();
 
-  delay(100);
+  delay(1000);
 }
 
 
