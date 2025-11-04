@@ -29,8 +29,8 @@ bool blinkState = false;
 
 
 // Helper functions
-void flash(int pin)    {digitalWrite(pin, blinkState); }
-bool blink()           { if ((millis() - blinkDelayStart) >= blinkDelayDuration) { blinkDelayStart = millis(); blinkState=!blinkState; }return blinkState; }
+void flash(int pin)    { digitalWrite(pin, blinkState); }
+void blink()           { if ((millis() - blinkDelayStart) >= blinkDelayDuration) { blinkDelayStart = millis(); blinkState=!blinkState; } }
 void bottomInterrupt() { detachInterrupt(digitalPinToInterrupt(Pin_LS_Top));     attachInterrupt(digitalPinToInterrupt(Pin_LS_Bottom), disableMotor, FALLING);}
 void topInterrupt()    { detachInterrupt(digitalPinToInterrupt(Pin_LS_Bottom));  attachInterrupt(digitalPinToInterrupt(Pin_LS_Top), disableMotor, FALLING);}
 bool eStopPressed()    { bool temp = !digitalRead(Pin_EStop); return temp;}
@@ -77,7 +77,9 @@ void stateMachine(bridgeState state) {
       break;
     case prepareRaise:
       digitalWrite(Pin_Status, HIGH);
-      if (blink()){flash(Pin_Buzzer);flash(Pin_BoatLight);}
+      blink();
+      flash(Pin_Buzzer);
+      flash(Pin_BoatLight);
       traffic.cycle(1);
       if (timerFinished(yellowDelay)) {
         topInterrupt();
@@ -88,8 +90,9 @@ void stateMachine(bridgeState state) {
       break;
     case raising:
       digitalWrite(Pin_Buzzer, LOW);
-
-      if (blink()){flash(Pin_Status); flash(Pin_BoatLight);}
+      blink();
+      flash(Pin_Status); 
+      flash(Pin_BoatLight);}
       traffic.cycle(0);
       startTime = millis();
       if (topLimitHit()) {
@@ -112,7 +115,9 @@ void stateMachine(bridgeState state) {
       break;
     case prepareLower:
       digitalWrite(Pin_Status, HIGH);
-      if (blink()){flash(Pin_Buzzer); flash(Pin_BoatLight);}
+      blink();
+      flash(Pin_Buzzer); 
+      flash(Pin_BoatLight);
       traffic.cycle(0);
       if (timerFinished(lowerDelay)) {
         bottomInterrupt();
@@ -124,7 +129,9 @@ void stateMachine(bridgeState state) {
       break;
     case lowering:
       digitalWrite(Pin_Buzzer, LOW);
-      if (blink()){flash(Pin_Status);flash(Pin_BoatLight);}
+      blink();
+      flash(Pin_Status);
+      flash(Pin_BoatLight);
       if (bottomLimitHit()) {
         stopMotor();
         Serial.println("Bridge fully lowered → DOWN");
