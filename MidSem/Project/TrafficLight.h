@@ -17,6 +17,7 @@ class TrafficModule{
         void setRed(bool);
         void setGreen(bool);
         void setBlue(bool);
+        uint8_t getCurrent();
 };
 
 #endif

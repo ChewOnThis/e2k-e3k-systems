@@ -9,7 +9,8 @@
 #include "SonicSensor.h"
 #include "TrafficLight.h"
 
-#define Pin_PhotoCell       34
+
+#define Pin_Enable           5
 #define Pin_DIR2            12
 #define Pin_DIR1            13 
 #define Pin_BoatLight       14
@@ -25,6 +26,7 @@
 #define Pin_TrafficGreen    27
 #define Pin_SonicTrigger_2  32
 #define Pin_SonicTrigger_1  33
+#define Pin_PhotoCell       34
 #define Pin_SonicEcho_2     36
 #define Pin_SonicEcho_1     39
 
@@ -35,32 +37,22 @@
 #define WebServer_SSID          "ESP32WA8"
 #define WebServer_Password      "12345678"
 
-#define ISPRESSED LOW
-
-
-struct GlobalStates {
-   bool eStopBtn;
-   bool debugBtn;
-   bool stateSwitch;
-   bool activateBridgeBtn;
-   bool photoCellState;
-   bool sonicState;
-   int trafficState;
-   bridgeState BridgeState;
-};
-
 extern TrafficModule traffic;
 extern Sonic sonic1;
 extern Sonic sonic2;
 extern Motor motor ;
-extern GlobalStates states;
-void initStates();
+void initPins();
 void disableMotor();
 void initInterrupts();
 void streetLights();
+void sonics();
 extern bridgeState currentState;
-
+extern bool Manual;
 extern bool EStop;
+extern bool streetLightOn;
+extern bool ultrasonics;
+
+const int detection_distance = 30;
 
 
 #endif

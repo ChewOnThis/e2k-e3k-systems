@@ -17,7 +17,6 @@ double Sonic::pollRaw() {
     delayMicroseconds(10);
     digitalWrite(trigPin, LOW);
     return pulseIn(echoPin, HIGH);
-    // return (double)fuck;
 }
 
 double Sonic::poll_cm() {

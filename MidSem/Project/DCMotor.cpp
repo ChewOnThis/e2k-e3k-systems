@@ -1,27 +1,29 @@
+#include "esp32-hal-gpio.h"
 #include "DCMotor.h"
 
-Motor::Motor(uint8_t drive, uint8_t dir) {
+Motor::Motor(uint8_t drive, uint8_t dir, uint8_t en) {
     DrivePin = drive;
     DirectionPin = dir;
+    EnablePin = en;
 }
 
 void Motor::init() {
     pinMode(DrivePin, OUTPUT);
     pinMode(DirectionPin, OUTPUT);
+    pinMode(EnablePin, OUTPUT);
+    digitalWrite(EnablePin, LOW);
+    analogWrite(DrivePin, 64);
+    
 }
 
 void Motor::disable()
 {
-    // digitalWrite(DrivePin, digitalRead(DirectionPin));
-    Serial.println("Start disable");
-    analogWrite(DrivePin, 0);
-    digitalWrite(DrivePin, LOW);
-    digitalWrite(DirectionPin, LOW);
-    Serial.println("Done Disable");
+    // Serial.println("Start disable");
+    digitalWrite(EnablePin, LOW);
+    // Serial.println("Done Disable");
 }
 
 void Motor::run (int pwm, int direction) {
-    Serial.println("RunBitch");
     digitalWrite( DirectionPin , ((direction==1)?HIGH:LOW) );
-    analogWrite ( DrivePin, pwm );
+    digitalWrite( EnablePin, HIGH );
 }

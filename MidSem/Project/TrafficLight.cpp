@@ -32,6 +32,9 @@ void TrafficModule::updateLights() {
             break;
     }
 }
+uint8_t TrafficModule::getCurrent() {
+    return currentState;
+}
 
 
 

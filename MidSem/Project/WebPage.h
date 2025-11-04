@@ -13,18 +13,14 @@ extern IPAddress gateway;
 extern IPAddress subnet;
 extern WebServer server;
 
-String stateName();
-
 void webPage_init();
 void webPage_setupRoutes();
+String stateName();     
 
 //Routes
 void handle_root();
 void handle_stateUpdate();
-void handle_eStop_on();
-void handle_eStop_off();
-void handle_debug_on();
-void handle_debug_off();
+void handle_eStop();
 void handle_switchState();
 void handle_activateBridge_raise();
 void handle_activateBridge_lower();

@@ -33,7 +33,7 @@
             --titleColour: #dfdede;
         }
         a {
-            color:red;
+            color:darkred;
         }
         * {
             margin: 5px;
@@ -68,7 +68,7 @@
         h3, h4, h5, label{
             color:var(--textColourDefault);
         }
-        .debug{
+        .manualToggle{
             border: var(--borderwidth) solid blue;
             justify-self: flex-end;
         }
@@ -98,7 +98,7 @@
             display:flex;
             flex-direction: column;
             flex-wrap: wrap;
-            justify-content: center;
+            justify-content: space-evenly;
             align-items: center;
             align-content: center;
             justify-self: flex-start;
@@ -135,7 +135,7 @@
         footer {
             border: var(--borderwidth) solid blue;
             color: #777; 
-            font-size:12px; 
+            font-size:14px; 
             text-align: center;
             width:var(--headFoot);
             padding-top:10px;
@@ -219,6 +219,7 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
+            background: var(--estopOn);
         }
         .buttonToggle.on{
             background:var(--buttonRegOn);
@@ -226,18 +227,7 @@
         .buttonToggle.off{
             background:var(--buttonRegOff);
         }
-        .buttonToggle.eStop.on{
-            background:var(--estopOn);
-        }
-        .buttonToggle.eStop.off{
-            background:var(--estopOff);
-        }
-        .buttonToggle.debugButton.off{
-            background: var(--buttonRegOff);
-        }
-        .buttonToggle.debugButton.on{
-            background: var(--buttonRegOn);
-        }
+
         .idContainer{
             border: var(--borderwidth) solid yellow;
             display: flex;
@@ -338,17 +328,32 @@
             font-size: 14px;
             place-content: center;
         }
+        .stateCell.on{
+            background-color: green;
+            text-decoration-color: white;
+        }
+        .stateCell.off{
+            background-color: var(--stateDefault);
+            color: white;
+        }
+        
         .status{
             color:var(--textColourDefault);
+        }
+        #emButtonBox{
+            border: var(--borderwidth) solid purple;
+            align-self: flex-start;
+        }
+        .state.on {
+            color: white;
+        }
+        .state.off {
+            color: var(--textColourDefault);
         }
     </style>
     <script>
         window.onload = function() {
             const state = {
-                eStopBtn:           0,
-                debugBtn:           0,
-                stateSwitchBtn:     0,
-                activateBridgeBtn:  0,
                 photoCellState:     0,
                 sonicState:         0,
                 trafficLightState:  0,
@@ -412,9 +417,8 @@
                     cell.classList.toggle('active', i === stateNum);
                 }
             }
-//TODO add statuses
             function renderStatus() {
-                document.getElementById('status').textContent = `Status: { eStopBtn: ${state.eStopBtn}, debugBtn: ${state.debugBtn}, stateSwitchBtn: ${state.stateSwitchBtn}, activateBridgeBtn: ${state.activateBridgeBtn}, photoCellState: ${state.photoCellState}, sonicState: ${state.sonicState}, trafficLightState: ${state.trafficLightState}, bridgeState: ${state.bridgeState}, nextState: ${state.nextState}  }`
+                document.getElementById('status').textContent = `Status: { photoCellState: ${state.photoCellState}, sonicState: ${state.sonicState}, trafficLightState: ${state.trafficLightState}, bridgeState: ${state.bridgeState}, nextState: ${state.nextState}  }`
             }
 
             function poll() {
@@ -425,40 +429,30 @@
             }
 
             function applyState(s) {
-                setBtnDisable(document.getElementById('eStopBtn'), on(s.eStopBtn));
-                setBtn(document.getElementById('debugBtn'), on(s.debugBtn));
-                setBtn(document.getElementById('stateSwitchBtn'), state(s.stateSwitchBtn));
-                setBtn(document.getElementById('activateBridgeBtn'), on(s.activateBridgeBtn));
                 setStateBox(document.getElementById('photoCellState'), on(s.photoCellState));
                 setStateBox(document.getElementById('sonicState'), on(s.sonicState));
                 setTrafficLight(parseInt(s.trafficLightState));
                 setActiveState(parseInt(s.bridgeState));
                 document.getElementById('stateSwitchBtn').textContent = s.nextState || 'Next State';
-                renderStatus;
+                renderStatus();
             }
 
             document.getElementById('eStopBtn').addEventListener('click', () => {
-                state.eStopBtn = state.eStopBtn ? 0 : 1;
-                fetch(state.eStopBtn ? '/eStop/on' : '/eStop/off');
+                fetch('/eStop');
                 renderStatus();
             });
 
-            document.getElementById('debugBtn').addEventListener('click', () => {
-                state.debugBtn = state.debugBtn ? 0 : 1;
-                fetch(state.debugBtn ? '/debug/on' : '/debug/off');
-                renderStatus();
-            });
 
             document.getElementById('stateSwitchBtn').addEventListener('click', () => {
-                state.stateSwitchBtn = state.stateSwitchBtn === 8 ? 1:state.stateSwitchBtn+1;
-                fetch('/switchState');
-                renderStatus();
+                    state.stateSwitchBtn = state.stateSwitchBtn === 8 ? 1 : state.stateSwitchBtn+1;
+                    fetch('/switchState');
+                    renderStatus();
             });
 
             document.getElementById('activateBridgeBtn').addEventListener('click', () => {
-                state.activateBridgeBtn = state.activateBridgeBtn ? 0 : 1;
-                fetch(state.activateBridgeBtn ? '/activateBridge/raise' : '/activateBridge/lower');
-                renderStatus();
+                    state.activateBridgeBtn = state.activateBridgeBtn ? 0 : 1;
+                    fetch(state.activateBridgeBtn ? '/activateBridge/raise' : '/activateBridge/lower');
+                    renderStatus();
             });
 
             poll();
@@ -478,14 +472,8 @@
         <div class="sideBar">
             <div class="controlBlock">
                 <div class="box" id="buttonBox"> 
-                    <label for="eStopBtn" class="controlLabel"> Emergency Stop </label>
-                    <button id="eStopBtn" class="buttonToggle eStop on" aria-pressed="false" > OFF </button>
-                </div>
-            </div>
-            <div class="controlBlock">
-                <div class="box" id="buttonBox"> 
-                    <label for="debugBtn" class="controlLabel"> Debug Mode </label>
-                    <button id="debugBtn" class="buttonToggle debug on" aria-pressed="false" > OFF </button>
+                    <label for="eStopBtn" class="controlLabel"> Emergency Override </label>
+                    <button id="eStopBtn" class="buttonToggle eStop" aria-pressed="false" ></button>
                 </div>
             </div>
             <div class="idContainer">
@@ -566,14 +554,14 @@
                 <div class="statePanel">
                     <h3>Bridge State Panel</h3>
                     <div class="stateGrid">
-                        <div id="state-1" class="stateCell"><h4>Lowered</h4></div>
-                        <div id="state-2" class="stateCell"><h4>Prepare Raise</h4></div>
-                        <div id="state-3" class="stateCell"><h4>Raising</h4></div>
-                        <div id="state-4" class="stateCell"><h4>Raised</h4></div>
-                        <div id="state-5" class="stateCell"><h4>Prepare Lower</h4></div>
-                        <div id="state-6" class="stateCell"><h4>Lowering</h4></div>
-                        <div id="state-7" class="stateCell"><h4>Emergency Lower</h4></div>
-                        <div id="state-8" class="stateCell"><h4>Emergency Raise</h4></div>
+                        <div id="state-1" class="stateCell on"><h4 class="state on">Lowered</h4></div>
+                        <div id="state-2" class="stateCell off"><h4 class="state off">Prepare Raise</h4></div>
+                        <div id="state-3" class="stateCell off"><h4 class="state off">Raising</h4></div>
+                        <div id="state-7" class="stateCell off"><h4 class="state off">Emergency Lower</h4></div>
+                        <div id="state-4" class="stateCell off"><h4 class="state off">Raised</h4></div>
+                        <div id="state-5" class="stateCell off"><h4 class="state off">Prepare Lower</h4></div>
+                        <div id="state-6" class="stateCell off"><h4 class="state off">Lowering</h4></div>
+                        <div id="state-8" class="stateCell off"><h4 class="state off">Emergency Raise</h4></div>
 
                     </div>
                 </div>
@@ -582,10 +570,7 @@
     </main>
     <section>
         <div class="status" id="status">
-            <div class="status">Status: {</div>
-            <div class="status">eStopBtn: 0, debugBtn: 0, stateSwitchBtn: 0</div>
-            <div class="status">photoCellState: 0, sonicState: 0, activateBridgeBtn: 0</div>
-            <div class="status">trafficLightState: 0, bridgeState: 1, nextState: Next State }</div>
+            Status: { photoCellState: 0, sonicState: 0, trafficLightState: 0, bridgeState: 1, nextState: Next State }
         </div>
     </section>
     <footer>
