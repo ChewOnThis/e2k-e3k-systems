@@ -20,7 +20,7 @@ bool status_on = false;
 
 unsigned long blinkDelayStart = 0;
 const unsigned long blinkDelayDuration = 550;
-// bool blinkState = false;
+bool blinkState = false;
 
 
 
@@ -29,8 +29,8 @@ const unsigned long blinkDelayDuration = 550;
 
 
 // Helper functions
-void flash(int pin)    { status_on = !status_on; digitalWrite(pin, status_on); }
-bool blink()           { static bool blinkState = false; if (millis() - blinkDelayStart >= blinkDelayDuration) { blinkDelayStart = millis(); blinkState=!blinkState;} return blinkState; }
+void flash(int pin)    {digitalWrite(pin, blinkState); }
+bool blink()           { if ((millis() - blinkDelayStart) >= blinkDelayDuration) { blinkDelayStart = millis(); blinkState=!blinkState; }return blinkState; }
 void bottomInterrupt() { detachInterrupt(digitalPinToInterrupt(Pin_LS_Top));     attachInterrupt(digitalPinToInterrupt(Pin_LS_Bottom), disableMotor, FALLING);}
 void topInterrupt()    { detachInterrupt(digitalPinToInterrupt(Pin_LS_Bottom));  attachInterrupt(digitalPinToInterrupt(Pin_LS_Top), disableMotor, FALLING);}
 bool eStopPressed()    { bool temp = !digitalRead(Pin_EStop); return temp;}
