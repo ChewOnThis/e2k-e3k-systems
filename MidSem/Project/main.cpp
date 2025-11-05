@@ -14,6 +14,8 @@ bool EStop = false;
 bool Manual = false;
 bool streetLightOn = false;
 bool ultrasonics = false;
+double sonic1Dist_cm = 0;
+double sonic2Dist_cm = 0;
 
 void setup(){
     Serial.begin(115200);
@@ -68,10 +70,10 @@ void loop() {
 int lightLevelSamples = 20;
 
 void sonics() {
-  double dist1 = sonic1.poll_cm(); 
-  double dist2 = sonic2.poll_cm(); 
+  sonic1Dist_cm = sonic1.poll_cm(); 
+  sonic2Dist_cm = sonic2.poll_cm(); 
 //   Serial.print("Dist: " + (String)dist1 + " - " + (String)dist2); 
-  ultrasonics = dist1 < detection_distance || dist2 < detection_distance; 
+  ultrasonics = sonic1Dist_cm < detection_distance || sonic2Dist_cm < detection_distance; 
 }
 
 void streetLights() {

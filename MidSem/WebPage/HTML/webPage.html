@@ -389,32 +389,56 @@
             function setTrafficLight(state) {
                 allOff();
                 switch(state) {
-                    case 0: setOn(red);
-                    case 1: setOn(yellow);
-                    case 2: setOn(green);
+                    case 0: setOn(traffic.red); break;
+                    case 1: setOn(traffic.yellow); break;
+                    case 2: setOn(traffic.green); break;
                 }
             }
             function allOff() {
-                traffic.forEach(el => {
+                [traffic.red, traffic.yellow, traffic.green].forEach(el => {
                     el.classList.remove('on');
-                    el.classList.setAttribute('aria-label', 
-                        el.classList.contains('red)') ? 'Red light off' 
-                            : el.classList.contains('yellow') ? 'Yellow light off' : 'Green light off'
-                    );
+                    el.classList.add('off');
+                    const label = el.classList.contains('red') ? 'Red' : 
+                                  el.classList.contains('yellow') ? 'Yellow' : 'Green';
+                    el.setAttribute('aria-label', label + ' light off');
                 });
             }
             function setOn(el) {
                 el.classList.remove('off');
                 el.classList.add('on');
-                const c = el.classList.contains('red)') ? 'Red light off' : 
-                            el.classList.contains('yellow') ? 'Yellow light off' : 'Green light off';
-                el.classList.setAttribute('aria-label', `${c} light on`);
+                const label = el.classList.contains('red') ? 'Red' : 
+                            el.classList.contains('yellow') ? 'Yellow' : 'Green';
+                el.setAttribute('aria-label', label + ' light on');
             }
 
+            // function setActiveState(stateNum) {
+            //     for (let i = 1; i<=8;i++) {
+            //         const cell = document.getElementById(`state-${i}`);
+            //         if (!cell) continue;
+            //         const isOn = (i === stateNum);
+            //         cell.classList.toggle('on', isOn);
+            //         cell.classList.toggle('off', !isOn);
+            //         const label = cell.querySelector('.state');
+            //         if (label) {
+            //             label.classList.toggle('on', isOn);
+            //             label.classList.toggle('off', !isOn);
+            //         }
+            //     }
+            // }
+
             function setActiveState(stateNum) {
-                for (let i = 1; i<=8;i++) {
+                const mapped = stateNum + 1;
+                for (let i = 1; i <= 8; i++) {
                     const cell = document.getElementById(`state-${i}`);
-                    cell.classList.toggle('active', i === stateNum);
+                    if (!cell) continue;
+                    const isOn = (i === mapped);
+                    cell.classList.toggle('on',  isOn);
+                    cell.classList.toggle('off', !isOn);
+                    const label = cell.querySelector('.state');
+                    if (label) {
+                        label.classList.toggle('on',  isOn);
+                        label.classList.toggle('off', !isOn);
+                    }
                 }
             }
             function renderStatus() {
@@ -431,6 +455,8 @@
             function applyState(s) {
                 setStateBox(document.getElementById('photoCellState'), on(s.photoCellState));
                 setStateBox(document.getElementById('sonicState'), on(s.sonicState));
+                document.getElementById('sonic1Dist').textContent = s.sonic1Dist ?? '0.0';
+                document.getElementById('sonic2Dist').textContent = s.sonic2Dist ?? '0.0';
                 setTrafficLight(parseInt(s.trafficLightState));
                 setActiveState(parseInt(s.bridgeState));
                 document.getElementById('stateSwitchBtn').textContent = s.nextState || 'Next State';
@@ -529,6 +555,8 @@
                             <div>
                                 <label> UltraSonic Sensor </label>
                                 <div id="sonicState" class="stateCell">Not Detected</div>
+                                <div>Sensor 1: <span id="sonic1Dist"> 0.0</span> cm</div>
+                                <div>Sensor 2: <span id="sonic2Dist"> 0.0</span> cm</div>
                             </div>
                         </div>
                     </div>

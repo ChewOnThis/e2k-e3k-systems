@@ -51,6 +51,8 @@ extern bool Manual;
 extern bool EStop;
 extern bool streetLightOn;
 extern bool ultrasonics;
+extern double sonic1Dist_cm;
+extern double sonic2Dist_cm;
 
 const int detection_distance = 30;
 

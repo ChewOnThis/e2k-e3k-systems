@@ -39,9 +39,6 @@ uint8_t TrafficModule::getCurrent() {
 
 
 void TrafficModule::cycle(int check) {
-    currentState = (currentState++)%2 ;
-    if (currentState != check){
-        currentState = check;
-    }
+    currentState = constrain(check, 0, 2);
     updateLights();
 }

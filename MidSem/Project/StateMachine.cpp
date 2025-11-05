@@ -8,8 +8,8 @@
 
 // Timers
 unsigned long startTime = 0;
-const unsigned long lowerDelay = 10000; // wait before next action
-const unsigned long yellowDelay = 5000;
+const unsigned long lowerDelay = 8000; // wait before next action
+const unsigned long yellowDelay = 12000;
 const unsigned long raiseDelay = 3000;
 const int boatcount_required = 4;
 
@@ -76,10 +76,10 @@ void stateMachine(bridgeState state) {
       }
       break;
     case prepareRaise:
-      digitalWrite(Pin_Status, HIGH);
+      digitalWrite(Pin_BoatLight, HIGH);
       blink();
       flash(Pin_Buzzer);
-      flash(Pin_BoatLight);
+      flash(Pin_Status);
       traffic.cycle(1);
       if (timerFinished(yellowDelay)) {
         topInterrupt();
@@ -89,10 +89,10 @@ void stateMachine(bridgeState state) {
       }
       break;
     case raising:
-      digitalWrite(Pin_Buzzer, LOW);
+      digitalWrite(Pin_BoatLight, HIGH);
+      digitalWrite(Pin_Status, HIGH);
       blink();
-      flash(Pin_Status); 
-      flash(Pin_BoatLight);}
+      flash(Pin_Buzzer);
       traffic.cycle(0);
       startTime = millis();
       if (topLimitHit()) {
@@ -128,10 +128,10 @@ void stateMachine(bridgeState state) {
       }
       break;
     case lowering:
-      digitalWrite(Pin_Buzzer, LOW);
+      digitalWrite(Pin_BoatLight, HIGH);
+      digitalWrite(Pin_Status, HIGH);
       blink();
-      flash(Pin_Status);
-      flash(Pin_BoatLight);
+      flash(Pin_Buzzer); 
       if (bottomLimitHit()) {
         stopMotor();
         Serial.println("Bridge fully lowered → DOWN");

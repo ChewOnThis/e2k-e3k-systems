@@ -4,10 +4,9 @@
 #include <Arduino.h>
 
 class Sonic {
-    private:
+    public:
         int trigPin;
         int echoPin;
-    public:
         Sonic(int trig, int echo);
         void init();
         double pollRaw();
