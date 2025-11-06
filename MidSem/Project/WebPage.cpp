@@ -65,10 +65,10 @@ void handle_eStop(){
 void handle_switchState(){
     switch(currentState) {
         case lowered:      {currentState = prepareRaise;                stopMotor();      }  break;
-        case prepareRaise: {currentState = raising;  topInterrupt();    stopMotor(); startMotorUp();   }  break;
-        case raising:      {currentState = raised;                      stopMotor();      }  break;
+        case prepareRaise: {currentState = raising;  topInterrupt();    stopMotor();      }  break;
+        case raising:      {currentState = raised;                      stopMotor();  startMotorUp();   }  break;
         case raised:       {currentState = prepareLower;                stopMotor();      }  break;
-        case prepareLower: {currentState = lowering; bottomInterrupt(); stopMotor(); startMotorDown(); }  break;
+        case prepareLower: {currentState = lowering; bottomInterrupt(); stopMotor();  startMotorDown(); }  break;
         case lowering:     {currentState = lowered;                     stopMotor();      }  break;
         default:                                                                             break;
     }

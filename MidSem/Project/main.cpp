@@ -39,7 +39,7 @@ void IRAM_ATTR detectEstop() {
 }
 
 void initInterrupts() {
-    attachInterrupt(digitalPinToInterrupt(Pin_EStop), detectEstop, FALLING);
+    // attachInterrupt(digitalPinToInterrupt(Pin_EStop), detectEstop, FALLING);
 }
 
 
@@ -72,8 +72,8 @@ int lightLevelSamples = 20;
 void sonics() {
   sonic1Dist_cm = sonic1.poll_cm(); 
   sonic2Dist_cm = sonic2.poll_cm(); 
-//   Serial.print("Dist: " + (String)dist1 + " - " + (String)dist2); 
-  ultrasonics = sonic1Dist_cm < detection_distance || sonic2Dist_cm < detection_distance; 
+  Serial.println("Dist: " + (String)sonic1Dist_cm + " - " + (String)sonic2Dist_cm); 
+  ultrasonics = sonic1Dist_cm < detection_distance || sonic2Dist_cm < detection_distance;
 }
 
 void streetLights() {
